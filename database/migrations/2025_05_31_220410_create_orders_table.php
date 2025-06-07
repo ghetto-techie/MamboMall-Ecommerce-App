@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -21,8 +20,8 @@ return new class extends Migration
             $table->string('currency')->nullable();
             $table->decimal('shipping_amount', 10, 2)->nullable();
             $table->string('shipping_method')->nullable();
-            $table->text('notes');
-            $table->timestamps();   
+            $table->text('notes')->nullable();
+            $table->timestamps();
         });
     }
 
