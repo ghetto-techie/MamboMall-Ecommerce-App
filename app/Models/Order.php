@@ -46,7 +46,7 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function address(): HasOne
+    public function addresses(): HasOne
     {
         return $this->hasOne(Address::class);
     }

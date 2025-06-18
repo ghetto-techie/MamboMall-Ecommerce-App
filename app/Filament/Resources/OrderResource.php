@@ -3,8 +3,10 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\OrderResource\Pages;
+use App\Filament\Resources\OrderResource\RelationManagers\AddressRelationManager;
 use App\Models\Order;
 use App\Models\Product;
+use App\Filament\Resources\OrderResource\Widgets\OrderStats;
 use Filament\Forms;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
@@ -23,7 +25,6 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
-    protected static ?string $navigationGroup = 'Sales';
     protected static ?int $navigationSort = 1;
 
     public static function getNavigationBadge(): ?string
@@ -400,7 +401,8 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+                //
+            AddressRelationManager::class
         ];
     }
 
@@ -411,6 +413,13 @@ class OrderResource extends Resource
             'create' => Pages\CreateOrder::route('/create'),
             'view' => Pages\ViewOrder::route('/{record}'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
+        ];
+    }
+
+    public static function getWidgets(): array
+    {
+        return [
+            OrderStats::class
         ];
     }
 }
