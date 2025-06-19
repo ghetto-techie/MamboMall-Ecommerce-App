@@ -21,14 +21,17 @@ use Illuminate\Support\Str;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Actions\Action;
+use Filament\Notifications\Collection;
 use Filament\Support\Enums\ActionSize;
+use Illuminate\Database\Eloquent\Model;
 
 class ProductResource extends Resource
 {
     protected static ?string $model = Product::class;
+
     protected static ?string $navigationIcon = 'heroicon-o-squares-2x2';
-    // protected static ?string $navigationGroup = 'Shop';
-    // protected static ?int $navigationSort = 2;
+
+    protected static ?int $navigationSort = 4; // Position in the Filament sidebar
 
     public static function form(Form $form): Form
     {
@@ -291,6 +294,11 @@ class ProductResource extends Resource
         ];
     }
 
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['name', 'slug', 'description'];
+    }
+
     public static function getPages(): array
     {
         return [
@@ -299,4 +307,31 @@ class ProductResource extends Resource
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
     }
-}
+
+    public static function getGlobalSearchResultTitle(Model $record): string
+    {
+        return $record->name;
+    }
+
+    public static function getGlobalSearchResultDetails(Model $record): array
+    {
+        return [
+            'Category' => $record->category?->name,
+            'Brand' => $record->brand?->name,
+        ];
+    }
+
+    public static function getGlobalSearchResultUrl(Model $record): ?string
+    {
+        return static::getUrl('edit', ['record' => $record]);
+    }
+
+    public static function getGlobalSearchResultImage(Model $record): ?string
+    {
+        // Assuming 'images' is an array or a single image path
+        if (is_array($record->images)) {
+            return $record->images[0] ?? null;
+        }
+        return $record->images;
+    }
+}       
