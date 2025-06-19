@@ -25,7 +25,7 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
-    protected static ?int $navigationSort = 1;
+    protected static ?int $navigationSort = 5;
 
     public static function getNavigationBadge(): ?string
     {
@@ -401,9 +401,13 @@ class OrderResource extends Resource
     public static function getRelations(): array
     {
         return [
-                //
             AddressRelationManager::class
         ];
+    }
+
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['id', 'user.name', 'user.email', 'payment_method', 'status'];
     }
 
     public static function getPages(): array
@@ -420,6 +424,15 @@ class OrderResource extends Resource
     {
         return [
             OrderStats::class
+        ];
+    }
+
+    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
+    {
+        return [
+            'Order ID' => 'ORD-' . str_pad($record->id, 5, '0', STR_PAD_LEFT),
+            'Customer' => $record->user?->name,
+            'Status' => ucfirst($record->status),
         ];
     }
 }
