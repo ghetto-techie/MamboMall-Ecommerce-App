@@ -78,26 +78,26 @@ class OrderResource extends Resource
 
                                 ToggleButtons::make('status')
                                     ->options([
-                                        'new' => 'New',
-                                        'processing' => 'Processing',
-                                        'shipped' => 'Shipped',
-                                        'delivered' => 'Delivered',
-                                        'canceled' => 'Canceled',
+                                        Order::STATUS_NEW => 'New',
+                                        Order::STATUS_PROCESSING => 'Processing',
+                                        Order::STATUS_SHIPPED => 'Shipped',
+                                        Order::STATUS_DELIVERED => 'Delivered',
+                                        Order::STATUS_CANCELED => 'Canceled',
                                     ])
                                     ->default('new')
                                     ->colors([
-                                        'new' => 'primary',
-                                        'processing' => 'warning',
-                                        'shipped' => 'info',
-                                        'delivered' => 'success',
-                                        'canceled' => 'danger',
+                                        Order::STATUS_NEW => 'primary',
+                                        Order::STATUS_PROCESSING => 'warning',
+                                        Order::STATUS_SHIPPED => 'info',
+                                        Order::STATUS_DELIVERED => 'success',
+                                        Order::STATUS_CANCELED => 'danger',
                                     ])
                                     ->icons([
-                                        'new' => 'heroicon-m-sparkles',
-                                        'processing' => 'heroicon-m-arrow-path',
-                                        'shipped' => 'heroicon-m-truck',
-                                        'delivered' => 'heroicon-m-check-badge',
-                                        'canceled' => 'heroicon-m-x-circle',
+                                        Order::STATUS_NEW => 'heroicon-m-sparkles',
+                                        Order::STATUS_PROCESSING => 'heroicon-m-arrow-path',
+                                        Order::STATUS_SHIPPED => 'heroicon-m-truck',
+                                        Order::STATUS_DELIVERED => 'heroicon-m-check-badge',
+                                        Order::STATUS_CANCELED => 'heroicon-m-x-circle',
                                     ])
                                     ->inline()
                                     ->required()
