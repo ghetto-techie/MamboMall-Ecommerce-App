@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
-      <title>{{ config('app.name', 'MamboMall') }}</title>
+      <title>{{ config('app.name', 'Ghetto Techie Ecommerce') }}</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">
@@ -17,7 +17,7 @@
         <!-- Styles -->
         @livewireStyles
     </head>
-    <body class="font-sans antialiased">
+    <body class="font-sans antialiased bg-gray-100 dark:bg-gray-800">
         <!-- <x-banner /> -->
         @livewire('partials.navbar')
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
@@ -39,5 +39,6 @@
         @stack('modals')
         @livewire('partials.footer')
         @livewireScripts
+        <script src="https://cdn.jsdelivr.net/npm/flowbite@latest/dist/flowbite.min.js"></script>
     </body>
 </html>

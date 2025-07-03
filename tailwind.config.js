@@ -16,18 +16,17 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Merriweather', ...defaultTheme.fontFamily.sans],
+                sans: ['Nunito', ...defaultTheme.fontFamily.sans],
+            },
+            colors: {
+                brand: {
+                    DEFAULT: '#3B82F6',
+                    light: '#60A5FA',
+                    dark: '#1E40AF',
+                    accent: '#FBBF24'
+                }
             },
         },
-    },
-
-    colors: {
-        brand: {
-            DEFAULT: '#3B82F6',
-            light: '#60A5FA',
-            dark: '#1E40AF',
-            accent: '#FBBF24'
-        }
     },
 
     plugins: [forms, typography, require('flowbite/plugin')],
