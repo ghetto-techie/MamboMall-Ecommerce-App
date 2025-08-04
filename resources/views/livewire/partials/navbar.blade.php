@@ -2,17 +2,23 @@
     <nav class="px-4 py-3 lg:px-6">
         <div class="flex flex-wrap justify-between items-center mx-auto max-w-[85rem]">
             <!-- Brand Logo -->
-            <a href="/" class="flex items-center space-x-2">
-                <span class="self-center text-xl font-bold whitespace-nowrap dark:text-white">MamboMall</span>
+            <a wire:navigate href="/" class="flex items-center space-x-2">
+                <span class="self-center text-xl font-bold whitespace-nowrap dark:text-white"> {{ config('app.name') }} </span>
             </a>
 
             <!-- Mobile Menu Button -->
             <div class="flex items-center md:order-2 md:hidden">
                 <!-- Cart Icon (Mobile) -->
-                <a wire:navigate href="{{ route('cart') }}" class="p-2 mr-2 text-gray-700 rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700">
+                <a 
+                    wire:navigate 
+                    href="{{ route('cart') }}" 
+                    class="p-2 mr-4 text-gray-700 rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 relative">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
+                    <span class="absolute -top-1 -right-1 bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-100">
+                        {{ $total_count ?? 0 }}
+                    </span>
                     <span class="sr-only">Cart</span>
                 </a>
                 
@@ -52,7 +58,7 @@
                         </a>
                     </li>
                     
-                    <!-- Cart Link -->
+                    {{-- <!-- Cart Link -->
                     <li class="md:hidden">
                         <a wire:navigate href="{{ route('cart') }}" class="flex items-center py-2 pr-4 pl-3 text-gray-700 rounded md:p-0 dark:text-gray-400 dark:hover:text-white">
                             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -61,7 +67,7 @@
                             Cart
                         </a>
                     </li>
-                    
+                     --}}
                     <!-- Login/User Section -->
                     @guest
                         <li class="md:hidden">
@@ -73,8 +79,8 @@
                     
                     @auth
                         <li class="md:hidden">
-                            <a href="{{ route('profile.show') }}" class="block py-2 pr-4 pl-3 text-gray-700 rounded md:p-0 dark:text-gray-400 dark:hover:text-white">
-                                Profile
+                            <a wire:navigate href="{{ route('profile.show') }}" class="block py-2 pr-4 pl-3 text-gray-700 rounded md:p-0 dark:text-gray-400 dark:hover:text-white">
+                                Account Settings
                             </a>
                         </li>
                         <li class="md:hidden">
@@ -92,11 +98,16 @@
             <!-- Right Side Icons (Desktop) -->
             <div class="hidden items-center md:flex md:order-2">
                 <!-- Cart with Badge -->
-                <a wire:navigate href="{{ route('cart') }}" class="p-2 mr-4 text-gray-700 rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 relative">
+                <a 
+                    wire:navigate 
+                    href="{{ route('cart') }}" 
+                    class="p-2 mr-4 text-gray-700 rounded-lg dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 relative">
                     <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                     </svg>
-                    <span class="absolute -top-1 -right-1 bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-100">4</span>
+                    <span class="absolute -top-1 -right-1 bg-blue-100 text-blue-800 text-xs font-bold px-2 py-0.5 rounded-full dark:bg-blue-900 dark:text-blue-100">
+                        {{ $total_count ?? 0 }}
+                    </span>
                     <span class="sr-only">Cart</span>
                 </a>
                 
@@ -143,7 +154,7 @@
                         </div>
                         <ul class="py-2" aria-labelledby="user-menu-button">
                             <li>
-                                <a href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Profile</a>
+                                <a wire:navigate href="{{ route('profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Account Settings</a>
                             </li>
                             <li>
                                 <form action="{{ route('logout') }}" method="POST">

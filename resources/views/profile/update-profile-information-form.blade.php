@@ -1,95 +1,111 @@
-<x-form-section submit="updateProfileInformation">
-    <x-slot name="title">
-        {{ __('Profile Information') }}
-    </x-slot>
+<div class="space-y-6">
+    <div>
+        <h3 class="text-xl font-medium text-gray-900 dark:text-white">{{ __('Profile Information') }}</h3>
+        <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+            {{ __('Update your account\'s profile information and email address.') }}
+        </p>
+    </div>
 
-    <x-slot name="description">
-        {{ __('Update your account\'s profile information and email address.') }}
-    </x-slot>
+    @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
+        <div x-data="{photoName: null, photoPreview: null}" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Photo') }}</label>
+                
+                <div class="flex items-center space-x-6 mt-2">
+                    <!-- Current Profile Photo -->
+                    <div x-show="!photoPreview">
+                        <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}" 
+                             class="rounded-full size-20 object-cover border-2 border-gray-200 dark:border-gray-700">
+                    </div>
 
-    <x-slot name="form">
-        <!-- Profile Photo -->
-        @if (Laravel\Jetstream\Jetstream::managesProfilePhotos())
-            <div x-data="{photoName: null, photoPreview: null}" class="col-span-6 sm:col-span-4">
-                <!-- Profile Photo File Input -->
-                <input type="file" id="photo" class="hidden"
-                            wire:model.live="photo"
-                            x-ref="photo"
-                            x-on:change="
+                    <!-- New Profile Photo Preview -->
+                    <div x-show="photoPreview" class="hidden">
+                        <span class="block rounded-full size-20 bg-cover bg-no-repeat bg-center border-2 border-gray-200 dark:border-gray-700"
+                              :style="'background-image: url(\'' + photoPreview + '\');'">
+                        </span>
+                    </div>
+
+                    <div class="flex space-x-3">
+                        <input type="file" id="photo" class="hidden"
+                               wire:model.live="photo"
+                               x-ref="photo"
+                               x-on:change="
                                     photoName = $refs.photo.files[0].name;
                                     const reader = new FileReader();
                                     reader.onload = (e) => {
                                         photoPreview = e.target.result;
                                     };
                                     reader.readAsDataURL($refs.photo.files[0]);
-                            " />
+                               " />
 
-                <x-label for="photo" value="{{ __('Photo') }}" />
+                        <button type="button"
+                                x-on:click.prevent="$refs.photo.click()"
+                                class="inline-flex items-center px-3 py-2 border border-gray-300 text-sm leading-4 font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-900">
+                            {{ __('Select A New Photo') }}
+                        </button>
 
-                <!-- Current Profile Photo -->
-                <div class="mt-2" x-show="! photoPreview">
-                    <img src="{{ $this->user->profile_photo_url }}" alt="{{ $this->user->name }}" class="rounded-full size-20 object-cover">
+                        @if ($this->user->profile_photo_path)
+                            <button type="button" 
+                                    wire:click="deleteProfilePhoto"
+                                    class="inline-flex items-center px-3 py-2 border border-red-500 text-sm leading-4 font-medium rounded-md text-red-600 dark:text-red-400 bg-white dark:bg-gray-700 hover:bg-red-50 dark:hover:bg-red-900/10 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 dark:focus:ring-offset-gray-900">
+                                {{ __('Remove Photo') }}
+                            </button>
+                        @endif
+                    </div>
                 </div>
-
-                <!-- New Profile Photo Preview -->
-                <div class="mt-2" x-show="photoPreview" style="display: none;">
-                    <span class="block rounded-full size-20 bg-cover bg-no-repeat bg-center"
-                          x-bind:style="'background-image: url(\'' + photoPreview + '\');'">
-                    </span>
-                </div>
-
-                <x-secondary-button class="mt-2 me-2" type="button" x-on:click.prevent="$refs.photo.click()">
-                    {{ __('Select A New Photo') }}
-                </x-secondary-button>
-
-                @if ($this->user->profile_photo_path)
-                    <x-secondary-button type="button" class="mt-2" wire:click="deleteProfilePhoto">
-                        {{ __('Remove Photo') }}
-                    </x-secondary-button>
-                @endif
-
+                
                 <x-input-error for="photo" class="mt-2" />
             </div>
-        @endif
+        </div>
+    @endif
 
+    <div class="grid grid-cols-1 gap-6 sm:grid-cols-2">
         <!-- Name -->
-        <div class="col-span-6 sm:col-span-4">
-            <x-label for="name" value="{{ __('Name') }}" />
-            <x-input id="name" type="text" class="mt-1 block w-full" wire:model="state.name" required autocomplete="name" />
-            <x-input-error for="name" class="mt-2" />
+        <div>
+            <label for="name" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Name') }}</label>
+            <input id="name" type="text" wire:model="state.name" required autocomplete="name"
+                   class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm">
+            <x-input-error for="name" class="mt-2 text-sm text-red-600 dark:text-red-400" />
         </div>
 
         <!-- Email -->
-        <div class="col-span-6 sm:col-span-4">
-            <x-label for="email" value="{{ __('Email') }}" />
-            <x-input id="email" type="email" class="mt-1 block w-full" wire:model="state.email" required autocomplete="username" />
-            <x-input-error for="email" class="mt-2" />
+        <div>
+            <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">{{ __('Email') }}</label>
+            <input id="email" type="email" wire:model="state.email" required autocomplete="username"
+                   class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-700 dark:text-white sm:text-sm">
+            <x-input-error for="email" class="mt-2 text-sm text-red-600 dark:text-red-400" />
 
             @if (Laravel\Fortify\Features::enabled(Laravel\Fortify\Features::emailVerification()) && ! $this->user->hasVerifiedEmail())
-                <p class="text-sm mt-2 dark:text-white">
+                <p class="mt-2 text-sm text-gray-800 dark:text-gray-200">
                     {{ __('Your email address is unverified.') }}
 
-                    <button type="button" class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" wire:click.prevent="sendEmailVerification">
+                    <button type="button" 
+                            wire:click.prevent="sendEmailVerification"
+                            class="text-blue-600 dark:text-blue-400 hover:text-blue-900 dark:hover:text-blue-300 underline">
                         {{ __('Click here to re-send the verification email.') }}
                     </button>
                 </p>
 
                 @if ($this->verificationLinkSent)
-                    <p class="mt-2 font-medium text-sm text-green-600 dark:text-green-400">
+                    <p class="mt-2 text-sm font-medium text-green-600 dark:text-green-400">
                         {{ __('A new verification link has been sent to your email address.') }}
                     </p>
                 @endif
             @endif
         </div>
-    </x-slot>
+    </div>
 
-    <x-slot name="actions">
-        <x-action-message class="me-3" on="saved">
-            {{ __('Saved.') }}
-        </x-action-message>
-
-        <x-button wire:loading.attr="disabled" wire:target="photo">
+    <div class="flex items-center justify-end space-x-3 pt-6">
+        @if (session()->has('saved'))
+            <span class="text-sm text-green-600 dark:text-green-400">{{ __('Saved.') }}</span>
+        @endif
+        
+        <button type="button" 
+                wire:loading.attr="disabled" 
+                wire:target="photo"
+                wire:click="updateProfileInformation"
+                class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 dark:focus:ring-offset-gray-800">
             {{ __('Save') }}
-        </x-button>
-    </x-slot>
-</x-form-section>
+        </button>
+    </div>
+</div>

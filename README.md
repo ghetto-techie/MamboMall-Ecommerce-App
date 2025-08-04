@@ -94,6 +94,22 @@ Mambo-Mall is a modern e-commerce platform built with Laravel 12 and Filament 3,
 
 Example screenshot section:
 
+### Front End Views
+
+#### HomePage
+![HomePage](screenshots/fr-home.png)
+![HomePage - Dark Mode](screenshots/fr-home-dark.png)
+
+#### Products
+![Products](screenshots/fr-products.png)
+![Products](screenshots/fr-products-2.png)
+![Products - Dark Mode](screenshots/fr-products-dark.png)
+![Products - Dark Mode](screenshots/fr-products-dark-2.png)
+
+#### Cart
+![Cart](screenshots/fr-cart.png)
+![Cart - Dark Mode](screenshots/fr-cart-dark.png)
+
 ### Admin Panel Views
 
 #### Dashboard
@@ -182,4 +198,4 @@ For support or feature requests, please [open an issue](https://github.com/ghett
 
 ---
 
-**Project Status**: Admin panel development in progress. Frontend implementation upcoming.
+**Project Status**: Frontend currently ongoing!

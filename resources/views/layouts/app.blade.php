@@ -35,10 +35,11 @@
                 {{ $slot }}
             </main>
         </div>
-
         @stack('modals')
         @livewire('partials.footer')
         @livewireScripts
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+        @livewireAlertScripts
         <script src="https://cdn.jsdelivr.net/npm/flowbite@latest/dist/flowbite.min.js"></script>
     </body>
 </html>
