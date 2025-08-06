@@ -25,6 +25,52 @@ class CartManagement
             // If item already exists, increment quantity
             $cart_items[$existing_item]['quantity']++;
             $cart_items[$existing_item]['total_amount'] = $cart_items[$existing_item]['quantity'] * $cart_items[$existing_item]['unit_amount'];
+            LivewireAlert::title($cart_items[$existing_item]['name'].' Updated in cart')
+                ->success()
+                ->timer(4000)
+                // ->position('top-end')
+                ->toast()    
+                ->show();
+        } else {
+            $product = Product::where('id', $product_id)->first(['id', 'name', 'price', 'images']);
+
+            if ($product) {
+                $cart_items[] = [
+                    'product_id' => $product_id,
+                    'name' => $product->name,
+                    'image' => $product->images[0],
+                    'unit_amount' => $product->price,
+                    'quantity' => 1,
+                    'total_amount' => $product->price,
+                ];
+            LivewireAlert::title(' '.$product->name.' added to Cart')
+                ->success()
+                ->timer(4000)
+                ->toast()    
+                ->show();
+            }
+        }
+
+        self::addCartItemToCookie($cart_items);
+        return count($cart_items);
+    }
+
+    public static function addItemToCartWithQuantity($product_id, $quantity = 1)
+    {
+        $cart_items = self::getCartItemsFromCookie();
+        $existing_item = null;
+
+        foreach ($cart_items as $key => $item) {
+            if ($item['product_id'] == $product_id) {
+                $existing_item = $key;
+                break;
+            }
+        }
+
+        if ($existing_item !== null) {
+            // If item already exists, increment quantity
+            $cart_items[$existing_item]['quantity'] = $quantity;
+            $cart_items[$existing_item]['total_amount'] = $cart_items[$existing_item]['quantity'] * $cart_items[$existing_item]['unit_amount'];
             LivewireAlert::title('Cart Updated')
                 ->success()
                 ->timer(4000)
@@ -40,7 +86,7 @@ class CartManagement
                     'name' => $product->name,
                     'image' => $product->images[0],
                     'unit_amount' => $product->price,
-                    'quantity' => 1,
+                    'quantity' => $quantity,
                     'total_amount' => $product->price,
                 ];
             LivewireAlert::title('Product Added to Cart')
@@ -66,6 +112,11 @@ class CartManagement
         }
 
         self::addCartItemToCookie($cart_items);
+        LivewireAlert::title($item['name'] . ' removed from cart')
+            ->success()
+            ->timer(4000)
+            ->toast()
+            ->show();
         return $cart_items;
     }
 
