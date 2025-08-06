@@ -112,7 +112,7 @@ class CartManagement
         }
 
         self::addCartItemToCookie($cart_items);
-        LivewireAlert::title($item['name'] . ' removed from cart')
+        LivewireAlert::title( 'Item removed from cart')
             ->success()
             ->timer(4000)
             ->toast()
