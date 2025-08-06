@@ -111,10 +111,10 @@
                 <p class="text-sm text-gray-600 dark:text-gray-300">Inclusive of all taxes</p>
               </div>
 
-              <!-- Description -->
-              <p class="text-gray-700 dark:text-gray-300 mb-6">
+              <!-- Description with improved dark mode support -->
+              <div class="prose max-w-none text-gray-700 dark:text-gray-300 dark:prose-invert mb-6">
                 {!! \Illuminate\Support\Str::markdown($product->description) !!}
-              </p>
+              </div>
 
               <!-- Key Features -->
               <div class="mb-6">
@@ -165,13 +165,24 @@
               </div>
             </div>
             
-            <!-- Action Buttons -->
+            <!-- Action Buttons with Loader -->
             <div class="flex flex-wrap gap-4">
               <button 
-                wire:click="addToCart"
-                class="flex-1 px-6 py-3 text-base font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-colors"
+                wire:click="addToCart({{ $product->id }})"
+                wire:loading.attr="disabled"
+                wire:loading.class="opacity-70 cursor-not-allowed"
+                class="flex-1 px-6 py-3 text-base font-medium text-white bg-blue-700 hover:bg-blue-800 rounded-lg focus:ring-4 focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-colors flex items-center justify-center"
               >
-                Add to Cart
+                <span wire:loading.remove wire:target="addToCart">
+                  Add to Cart
+                </span>
+                <span wire:loading wire:target="addToCart" class="flex items-center">
+                  <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Adding...
+                </span>
               </button>
               <button 
                 wire:click="buyNow"

@@ -5,7 +5,7 @@
             <div class="grid md:grid-cols-2 gap-4 md:gap-8 xl:gap-20 md:items-center">
                 <div>
                     <h1 class="block text-3xl font-bold text-gray-800 sm:text-4xl lg:text-6xl lg:leading-tight dark:text-white">
-                        Start your journey with <span class="text-blue-600 dark:text-blue-400">MamboMall</span>
+                        Start your journey with <span class="text-blue-600 dark:text-blue-400"> {{ config('app.name')}} </span>
                     </h1>
                     <p class="mt-3 text-lg text-gray-800 dark:text-gray-300">
                         Purchase wide varieties of electronics products like Smartphones, Laptops, Smartwatches, Television and many more.
@@ -93,7 +93,11 @@
                         <!-- Flowbite Card -->
                         <div wire:key="brand-{{ $brand->id }}"
                             class="bg-white dark:bg-gray-800 rounded-xl shadow-md overflow-hidden transition-transform duration-300 hover:scale-105 border border-gray-200 dark:border-gray-700">
-                            <a href="#" class="block">
+                            <a 
+                                wire:navigate 
+                                href="/products?selected_brands[0]={{ $brand->id }}" 
+                                class="block"
+                            >
                                 <div class="p-8 flex justify-center">
                                     <img src="{{ url('storage', $brand->image) }}" alt="{{ $brand->name }}" class="h-32 object-contain">
                                 </div>
@@ -134,7 +138,7 @@
                         <!-- Flowbite Card -->
                         <div wire:key="category-{{ $category->id }}"
                             class="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transition-transform duration-300 hover:scale-105 border border-gray-200 dark:border-gray-700">
-                            <a href="#" class="block">
+                            <a wire:navigate href="/products?selected_categories[0]={{ $category->id }}" class="block">
                                 <div class="p-8 flex justify-center">
                                     <img src="{{ url('storage', $category->image) }}" alt="{{ $category->name }}" class="h-40 object-contain">
                                 </div>

@@ -23,7 +23,12 @@
                 @foreach($categories as $category)
                 <li wire:key="{{ $category->id }}">
                   <div class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <input id="{{ $category->slug }}" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <input 
+                      id="{{ $category->slug }}" 
+                      wire:model.live="selected_categories" 
+                      value="{{ $category->id }}" type="checkbox" 
+                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                    >
                     <label for="{{ $category->slug }}" class="ms-3 text-gray-700 dark:text-gray-300 cursor-pointer">
                       {{ $category->name }}
                     </label>
@@ -40,7 +45,10 @@
                 @foreach($brands as $brand)
                 <li wire:key="{{ $brand->id }}">
                   <div class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <input id="{{ $brand->slug }}" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <input id="{{ $brand->slug }}" 
+                      wire:model.live="selected_brands" 
+                      value="{{ $brand->id }}" type="checkbox" 
+                      class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
                     <label for="{{ $brand->slug }}" class="ms-3 text-gray-700 dark:text-gray-300 cursor-pointer">
                       {{ $brand->name }}
                     </label>
@@ -64,14 +72,14 @@
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Min Price</label>
                     <div class="relative">
                       <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">Ksh</span>
-                      <input type="number" min="1000" max="500000" class="pl-10 pr-3 py-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="1000">
+                      <input type="number" min="100" max="50000000" class="pl-10 pr-3 py-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="1000">
                     </div>
                   </div>
                   <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Max Price</label>
                     <div class="relative">
                       <span class="absolute inset-y-0 left-0 flex items-center pl-3 text-gray-500">Ksh</span>
-                      <input type="number" min="1000" max="500000" class="pl-10 pr-3 py-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="500000">
+                      <input type="number" min="100" max="50000000" class="pl-10 pr-3 py-2 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="500000">
                     </div>
                   </div>
                 </div>
@@ -82,16 +90,22 @@
             <div class="p-5 bg-white dark:bg-gray-800 rounded-2xl shadow border border-gray-200 dark:border-gray-700">
               <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Product Status</h3>
               <ul class="space-y-3">
-                @foreach(['In Stock', 'On Sale'] as $status)
                 <li>
                   <div class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                    <input id="status-{{ Str::slug($status) }}" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="status-{{ Str::slug($status) }}" class="ms-3 text-gray-700 dark:text-gray-300 cursor-pointer">
-                      {{ $status }}
+                    <input id="featured" wire:model.live="featured" value="1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="featured" class="ms-3 text-gray-700 dark:text-gray-300 cursor-pointer">
+                      Featured Products
                     </label>
                   </div>
                 </li>
-                @endforeach
+                <li>
+                  <div class="flex items-center p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <input id="on-sale" wire:model.live="on_sale" value="1" type="checkbox" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                    <label for="on-sale" class="ms-3 text-gray-700 dark:text-gray-300 cursor-pointer">
+                      On Sale
+                    </label>
+                  </div>
+                </li>
               </ul>
             </div>
 
@@ -111,12 +125,15 @@
             </div>
             <div class="flex space-x-3">
               <div class="relative">
-                <select class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                  <option selected>Sort by latest</option>
-                  <option>Sort by price: low to high</option>
-                  <option>Sort by price: high to low</option>
-                  <option>Sort by popularity</option>
-                  <option>Sort by rating</option>
+                <select 
+                  wire:model.live="sort" 
+                  class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                >
+                  <option selected value="latest">Sort by latest</option>
+                  <option value="price_low">Sort by price: low to high</option>
+                  <option value="price_high">Sort by price: high to low</option>
+                  {{-- <option value="popularity">Sort by popularity</option>
+                  <option value="rating">Sort by rating</option> --}}
                 </select>
               </div>
               <button class="p-2.5 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:bg-gray-700 dark:border-gray-600 dark:hover:bg-gray-600">
@@ -189,11 +206,32 @@
                         </span>
                       @endif
                     </div>
-                    <button type="button" class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-colors">
-                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <a 
+                      wire:click.prevent="addToCart({{ $product->id }})"
+                      href=""
+                      class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800 transition-colors relative"
+                      wire:loading.class="opacity-60 cursor-not-allowed"
+                      wire:loading.attr="aria-disabled"
+                      wire:target="addToCart({{ $product->id }})"
+                    >
+                      <svg 
+                        class="w-5 h-5 inline-block align-middle transition-opacity duration-200"
+                        fill="none" stroke="currentColor" viewBox="0 0 24 24" 
+                        xmlns="http://www.w3.org/2000/svg"
+                        wire:loading.remove wire:target="addToCart({{ $product->id }})"
+                      >
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path>
                       </svg>
-                    </button>
+                      <span 
+                        wire:loading wire:target="addToCart({{ $product->id }})" 
+                        class="inline-block align-middle"
+                      >
+                        <svg class="w-5 h-5 animate-spin text-white mx-auto" fill="none" viewBox="0 0 24 24">
+                          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                        </svg>
+                      </span>
+                    </a>
                   </div>
                 </div>
               </div>
