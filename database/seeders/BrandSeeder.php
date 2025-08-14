@@ -1,4 +1,4 @@
-<?php
+<?php 
 
 namespace Database\Seeders;
 
@@ -11,36 +11,46 @@ class BrandSeeder extends Seeder
     public function run()
     {
         $brands = [
-            // Mainstream beers (EABL)
-            'Tusker',
-            'Tusker Malt',
-            'Tusker Lite',
-            'White Cap',
-            'Pilsner',
-            'Guinness',
-            'Jack Daniels', // Added Jack Daniels as a popular brand
-            'Hunter',
-            'Hennessy', 
-            'Kenya Cane', 
-            'Smirnoff', 
-            'Gordon\'s', 
-            'Captain Morgan', 
-            'General Medley', 
-            'Bacardi', 
-            'Malibu', 
-            'Absolut', 
-            'Ciroc', 
-            'Belvedere',
-            // Local / regional brews
-            'Summit Lager',
-            'Senator',
-            // Craft & microbrews
-            '254 Brewing Co',
-            'Kenyan Originals',
-            'Procera Gin',
-            // Spirits from Keroche
-            'Crescent Gin',
-            'Crescent Vodka',
+            // Smartphones
+            'Samsung',
+            'Apple',
+            'Infinix',
+            'Tecno',
+            'Oppo',
+            'Xiaomi',
+            'Realme',
+            'Huawei',
+            'Nokia',
+
+            // Laptops & Computers
+            'HP',
+            'Dell',
+            'Lenovo',
+            'Asus',
+            'Acer',
+            'Microsoft Surface',
+            'Apple MacBook',
+
+            // Accessories & Peripherals
+            'Logitech',
+            'Sony',
+            'Canon',
+            'Epson',
+            'JBL',
+            'Anker',
+
+            // Networking & Storage
+            'TP-Link',
+            'D-Link',
+            'Seagate',
+            'Western Digital',
+
+            // TVs & Home Electronics
+            'LG',
+            'Samsung TV',
+            'Sony Bravia',
+            'Hisense',
+            'Skyworth',
         ];
 
         foreach ($brands as $brandName) {

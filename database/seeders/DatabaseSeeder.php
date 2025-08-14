@@ -15,7 +15,17 @@ class DatabaseSeeder extends Seeder
     {
         User::factory()->withPersonalTeam()->create([
             'name' => 'Test User',
-            'email' => 'test@example.com',
+            'email' => 'test@ghettotechie.co.ke',
+            'email_verified_at' => now(),
+            'password' => bcrypt('password123'),
+        ]);
+
+        // Create an admin user, email is default for admin panel
+        User::factory()->withPersonalTeam()->create([
+            'name' => 'Admin User',
+            'email' => 'admin@ghettotechie.co.ke',
+            'email_verified_at' => now(),
+            'password' => bcrypt('admin@123'),
         ]);
 
         User::factory(10)->withPersonalTeam()->create();

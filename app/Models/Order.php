@@ -36,6 +36,17 @@ class Order extends Model
     const STATUS_DELIVERED = 'delivered';
     const STATUS_CANCELED = 'canceled';
 
+    const PAYMENT_STATUS_PENDING = 'pending';
+    const PAYMENT_STATUS_PAID = 'paid';
+    const PAYMENT_STATUS_FAILED = 'failed';
+    const PAYMENT_STATUS_REFUNDED = 'refunded';
+
+
+    const PAYMENT_METHOD_MPESA = 'mpesa';
+    const PAYMENT_METHOD_CARD = 'card';
+    const PAYMENT_METHOD_CASH_ON_DELIVERY = 'cash_on_delivery';
+    
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -46,7 +57,7 @@ class Order extends Model
         return $this->hasMany(OrderItem::class);
     }
 
-    public function addresses(): HasOne
+    public function address(): HasOne
     {
         return $this->hasOne(Address::class);
     }

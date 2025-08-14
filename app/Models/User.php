@@ -9,6 +9,7 @@ use Filament\Panel;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -81,5 +82,11 @@ class User extends Authenticatable implements MustVerifyEmail, FilamentUser
     {
         // return str_ends_with($this->email, '@yourdomain.com') && $this->hasVerifiedEmail();
         return $this->hasVerifiedEmail() && $this->email === 'admin@ghettotechie.co.ke';
+    }
+
+
+    public function orders(): HasMany
+    {
+        return $this->hasMany(\App\Models\Order::class);
     }
 }

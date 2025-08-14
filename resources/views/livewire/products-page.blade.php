@@ -110,7 +110,7 @@
             </div>
 
             <!-- Reset Filters Button -->
-            <button class="w-full py-3 px-4 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700">
+            <button wire:click="resetFilters" class="w-full py-3 px-4 text-sm font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 focus:outline-none dark:bg-gray-800 dark:border-gray-700 dark:text-white dark:hover:bg-gray-700">
               Reset All Filters
             </button>
           </div>
@@ -245,7 +245,7 @@
                 </svg>
                 <h3 class="mt-4 text-xl font-semibold text-gray-900 dark:text-white">No products found</h3>
                 <p class="mt-2 text-gray-600 dark:text-gray-400">Try adjusting your search or filter to find what you're looking for.</p>
-                <button class="mt-6 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600">
+                <button wire:click="resetFilters" class="mt-6 inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-500 dark:hover:bg-blue-600">
                   Reset Filters
                 </button>
               </div>

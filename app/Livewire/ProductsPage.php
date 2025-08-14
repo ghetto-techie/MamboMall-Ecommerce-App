@@ -48,8 +48,11 @@ class ProductsPage extends Component
         $this->selected_brands = [];
         $this->featured = null;
         $this->on_sale = null;
-        $this->min_price = null;
+        $this->min_price = 0;
         $this->max_price = 1000000; // Reset to default
+        $this->sort = 'latest';
+        $this->reset(['selected_categories', 'selected_brands', 'featured', 'on_sale', 'min_price', 'max_price', 'sort']);
+        $this->resetPage();
     }
 
     // Add product to cart

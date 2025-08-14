@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8ab5a28210d0bd676324488becfec0a2",
+    "content-hash": "a8687f9da609a3b20069a0ca79adf704",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -4299,6 +4299,57 @@
                 "source": "https://github.com/paragonie/constant_time_encoding"
             },
             "time": "2024-05-08T12:36:18+00:00"
+        },
+        {
+            "name": "payherokenya/payhero-php",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/PAY-HERO-KENYA/payhero-php-package.git",
+                "reference": "3d91d71642f80f004d9952b09f020be2c3c62d96"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/PAY-HERO-KENYA/payhero-php-package/zipball/3d91d71642f80f004d9952b09f020be2c3c62d96",
+                "reference": "3d91d71642f80f004d9952b09f020be2c3c62d96",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "PayHero\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Pay Hero Kenya LTD",
+                    "email": "payherokenya@gmail.com",
+                    "homepage": "https://payherokenya.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "This PHP client library enables easy interaction with the PayHero API, allowing developers to integrate PayHero's payment processing capabilities into their PHP applications. With this client, you can perform operations like checking wallet balances, topping up service wallets, initiating payments, and querying transaction statuses.To be able to generate API keys with Pay Hero to use our API services you need to create an account with us. Create an account using below link and verify your account to be able to proceed. Go To: https://app.payhero.co.ke",
+            "homepage": "https://github.com/PAY-HERO-KENYA/payhero-php-package.git",
+            "keywords": [
+                "mpesa_api",
+                "payhero",
+                "payhero_kenya",
+                "payment_api",
+                "shopify",
+                "woocommerce"
+            ],
+            "support": {
+                "issues": "https://github.com/PAY-HERO-KENYA/payhero-php-package/issues",
+                "source": "https://github.com/PAY-HERO-KENYA/payhero-php-package/tree/v1.0.1"
+            },
+            "time": "2024-04-15T17:58:58+00:00"
         },
         {
             "name": "phpoption/phpoption",

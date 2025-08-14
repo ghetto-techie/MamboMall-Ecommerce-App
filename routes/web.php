@@ -22,8 +22,6 @@ Route::get('/products/{slug}', ProductDetailPage::class)->name('product.detail')
 
 Route::get('/cart', CartPage::class)->name('cart');
 
-Route::get('/checkout', CheckoutPage::class)->name('checkout');
-
 Route::get('/success', SuccessPage::class)->name('success');
 
 Route::get('/cancel', CancelPage::class)->name('cancel');
@@ -40,4 +38,6 @@ Route::middleware([
     Route::get('/my-orders', MyOrdersPage::class)->name('user.orders');
 
     Route::get('/my-orders/{order}', MyOrderDetailPage::class)->name('user.order.detail');
+
+    Route::get('/checkout', CheckoutPage::class)->name('checkout');
 });

@@ -11,20 +11,36 @@ class CategorySeeder extends Seeder
     public function run()
     {
         $categories = [
-            'Beer',
-            'Lager',
-            'Stout',
-            'Cider',
-            'Whisky',
-            'Vodka',
-            'Gin',
-            'Rum',
-            'Brandy',
-            'Traditional Brews',
-            'Wine',
-            'Rum',
-            'Sprits',
-            'Custom'
+            // Phones & Tablets
+            'Smartphones',
+            'Feature Phones',
+            'Tablets',
+            'Smartwatches',
+            'Phone Accessories',
+
+            // Computers & Laptops
+            'Laptops',
+            'Desktops',
+            'Monitors',
+            'Computer Accessories',
+            'Printers & Scanners',
+            'Networking Equipment',
+
+            // Storage Devices
+            'External Hard Drives',
+            'Flash Drives',
+            'Memory Cards',
+
+            // Audio & Video
+            'Televisions',
+            'Home Theatre Systems',
+            'Headphones & Earphones',
+            'Bluetooth Speakers',
+
+            // Cameras & Photography
+            'Digital Cameras',
+            'DSLR Cameras',
+            'Camera Accessories',
         ];
 
         foreach ($categories as $categoryName) {

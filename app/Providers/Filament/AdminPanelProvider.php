@@ -28,11 +28,19 @@ class AdminPanelProvider extends PanelProvider
             ->id('admin')
             ->path('admin')
             ->login()
+            // ->brandLogo(asset('images/logo.svg')) // Add your logo path
+            ->brandLogoHeight('2.5rem')
+            // ->favicon(asset('images/favicon.ico'))
             ->colors([
-                'primary' => Color::Teal,
+                'primary' => Color::hex('#2563EB'), // More professional blue
+                'secondary' => Color::hex('#8B5CF6'), // Sophisticated purple
+                'accent' => Color::hex('#EC4899'), // Modern pink accent
+                'gray' => Color::Zinc, // Professional neutral
             ])
+            ->font('Poppins', provider: \Filament\FontProviders\GoogleFontProvider::class)
             ->darkMode(true)
             ->spa()
+            ->sidebarCollapsibleOnDesktop()
             ->discoverResources(in: app_path('Filament/Resources'), for: 'App\\Filament\\Resources')
             ->discoverPages(in: app_path('Filament/Pages'), for: 'App\\Filament\\Pages')
             ->pages([
@@ -41,8 +49,7 @@ class AdminPanelProvider extends PanelProvider
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
                 OrderStats::class,
-                // Widgets\AccountWidget::class,
-                // Widgets\FilamentInfoWidget::class,
+                Widgets\AccountWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,
@@ -57,6 +64,15 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->authMiddleware([
                 Authenticate::class,
+            ])
+            // ->viteTheme('resources/css/filament/admin/theme.css') // Custom theme
+            ->sidebarFullyCollapsibleOnDesktop() // Modern sidebar layout
+            ->globalSearchKeyBindings(['command+k', 'ctrl+k']) // Modern search shortcut
+            ->navigationGroups([ // Organized menu groups
+                'Shop',
+                'Inventory',
+                'Users',
+                'Settings',
             ]);
     }
 }
