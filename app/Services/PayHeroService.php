@@ -64,6 +64,7 @@ class PayHeroService
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json'
             ])->post("{$this->baseUrl}/payments", $payload);
+            Log::info('PayHero STK Push Request', ['payload' => $payload, 'response' => $response->json()]);
             $response->throw();
             return $response->json();
         } catch (\Throwable $e) {

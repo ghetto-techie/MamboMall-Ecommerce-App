@@ -4,3 +4,35 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+  /* thumb styling for WebKit browsers */
+  input.dual-range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: #ffffff;
+    border: 3px solid #2563eb; /* blue ring */
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  input.dual-range::-webkit-slider-runnable-track {
+    height: 3px;
+    -webkit-appearance: none;
+    background: transparent;
+  }
+
+  /* Firefox */
+  input.dual-range::-moz-range-thumb {
+    width: 18px;
+    height: 18px;
+    border-radius: 9999px;
+    background: #ffffff;
+    border: 3px solid #2563eb;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+  }
+  input.dual-range::-moz-range-track {
+    height: 3px;
+    background: transparent;
+  }
+

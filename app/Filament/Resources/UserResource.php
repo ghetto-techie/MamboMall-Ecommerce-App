@@ -41,7 +41,7 @@ class UserResource extends Resource
                             ->label("Full Name")
                             ->placeholder('John Doe')
                             ->columnSpan(2),
-                        
+
                         TextInput::make('email')
                             ->required()
                             ->email()
@@ -50,13 +50,13 @@ class UserResource extends Resource
                             ->maxLength(255)
                             ->unique(ignoreRecord: true)
                             ->columnSpan(2),
-                        
+
                         DateTimePicker::make('email_verified_at')
                             ->label('Email Verification Date')
                             ->displayFormat('M d, Y H:i')
                             ->default(now())
                             ->columnSpan(1),
-                        
+
                         TextInput::make('password')
                             ->label('Password')
                             ->password()
@@ -83,14 +83,14 @@ class UserResource extends Resource
                     ->sortable()
                     ->icon('heroicon-o-user')
                     ->description(fn (User $record) => $record->email),
-                
+
                 TextColumn::make('email_verified_at')
                     ->label('Verification Status')
                     ->badge()
                     ->color(fn ($state): string => $state ? 'success' : 'danger')
                     ->formatStateUsing(fn ($state) => $state ? 'Verified' : 'Pending')
                     ->icon(fn ($state) => $state ? 'heroicon-o-check-circle' : 'heroicon-o-clock'),
-                
+
                 TextColumn::make('created_at')
                     ->label('Joined')
                     ->dateTime('M d, Y')
@@ -104,7 +104,7 @@ class UserResource extends Resource
                     ->placeholder('All Users')
                     ->trueLabel('Verified')
                     ->falseLabel('Unverified'),
-                
+
                 Tables\Filters\Filter::make('created_at')
                     ->form([
                         Forms\Components\DatePicker::make('created_from')
@@ -114,10 +114,10 @@ class UserResource extends Resource
                     ])
                     ->query(function (Builder $query, array $data): Builder {
                         return $query
-                            ->when($data['created_from'], 
+                            ->when($data['created_from'],
                                 fn($q) => $q->whereDate('created_at', '>=', $data['created_from'])
                             )
-                            ->when($data['created_until'], 
+                            ->when($data['created_until'],
                                 fn($q) => $q->whereDate('created_at', '<=', $data['created_until'])
                             );
                     })

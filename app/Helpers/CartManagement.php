@@ -29,7 +29,7 @@ class CartManagement
                 ->success()
                 ->timer(4000)
                 // ->position('top-end')
-                ->toast()    
+                ->toast()
                 ->show();
         } else {
             $product = Product::where('id', $product_id)->first(['id', 'name', 'price', 'images']);
@@ -46,7 +46,7 @@ class CartManagement
             LivewireAlert::title(' '.$product->name.' added to Cart')
                 ->success()
                 ->timer(4000)
-                ->toast()    
+                ->toast()
                 ->show();
             }
         }
@@ -75,7 +75,7 @@ class CartManagement
                 ->success()
                 ->timer(4000)
                 ->position('top-end')
-                ->toast()    
+                ->toast()
                 ->show();
         } else {
             $product = Product::where('id', $product_id)->first(['id', 'name', 'price', 'images']);
@@ -158,14 +158,19 @@ class CartManagement
     public static function decrementCartItemQuantity($product_id)
     {
         $cart_items = self::getCartItemsFromCookie();
-        foreach ($cart_items as $key => $item) {
-            if ($item['product_id'] == $product_id) {
-                $cart_items[$key]['quantity']--;
-                $cart_items[$key]['total_amount'] = $cart_items[$key]['quantity'] * $cart_items[$key]['unit_amount'];
-                break;
+        if (count($cart_items) > 1) {
+            foreach ($cart_items as $key => $item) {
+                if ($item['product_id'] == $product_id) {
+                    $cart_items[$key]['quantity']--;
+                    $cart_items[$key]['total_amount'] = $cart_items[$key]['quantity'] * $cart_items[$key]['unit_amount'];
+                    break;
+                }
             }
+
+            self::addCartItemToCookie($cart_items);
+        } else {
+            LivewireAlert::title("Atleast one item can be ordered!")->error()->show();
         }
-        self::addCartItemToCookie($cart_items);
         return $cart_items;
     }
 

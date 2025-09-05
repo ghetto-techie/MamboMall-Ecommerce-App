@@ -37,7 +37,7 @@ class AdminPanelProvider extends PanelProvider
                 'accent' => Color::hex('#EC4899'), // Modern pink accent
                 'gray' => Color::Zinc, // Professional neutral
             ])
-            ->font('Poppins', provider: \Filament\FontProviders\GoogleFontProvider::class)
+            ->font('Montserrat', provider: \Filament\FontProviders\GoogleFontProvider::class)
             ->darkMode(true)
             ->spa()
             ->sidebarCollapsibleOnDesktop()
