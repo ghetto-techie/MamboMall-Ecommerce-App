@@ -27,7 +27,8 @@ class CategoryResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
     protected static ?string $model = Category::class;
     protected static ?string $navigationIcon = 'heroicon-o-tag';
-    protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Shop';
+    protected static ?int $navigationSort = 1;
 
     public static function form(Form $form): Form
     {
@@ -51,7 +52,7 @@ class CategoryResource extends Resource
                                     })
                                     ->required()
                                     ->columnSpan(2),
-                                
+
                                 Forms\Components\TextInput::make('slug')
                                     ->label('URL Slug')
                                     ->placeholder('auto-generated')
@@ -68,7 +69,7 @@ class CategoryResource extends Resource
                                     ->dehydrated()
                                     ->required(),
                             ]),
-                        
+
                         Forms\Components\FileUpload::make('image')
                             ->label('Category Image')
                             ->image()
@@ -81,7 +82,7 @@ class CategoryResource extends Resource
                             ->downloadable()
                             ->openable()
                             ->columnSpanFull(),
-                        
+
                         Toggle::make('is_active')
                             ->label('Active Status')
                             ->onIcon('heroicon-o-check')
@@ -105,13 +106,13 @@ class CategoryResource extends Resource
                     ->label('Image')
                     ->circular()
                     ->defaultImageUrl(url('/images/default-category.png')),
-                
+
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable()
                     ->weight('medium')
                     ->description(fn (Category $record) => $record->slug),
-                
+
                 IconColumn::make('is_active')
                     ->label('Status')
                     ->boolean()
@@ -120,12 +121,12 @@ class CategoryResource extends Resource
                     ->trueColor('success')
                     ->falseColor('danger')
                     ->sortable(),
-                
+
                 TextColumn::make('products_count')
                     ->label('Products')
                     ->counts('products')
                     ->sortable(),
-                
+
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime('M d, Y')

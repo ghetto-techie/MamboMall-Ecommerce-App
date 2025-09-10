@@ -9,7 +9,7 @@
         </svg>
       </div>
     </div>
-    
+
     <div class="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden">
       <div class="overflow-x-auto">
         <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -24,25 +24,26 @@
             </tr>
           </thead>
           <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+            @forelse ($userOrders as $order)
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <td class="py-4 px-6 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900 dark:text-white">#ORD-2024-20</div>
+                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ '#ORD-' . $order->id }} </div>
               </td>
               <td class="py-4 px-6 whitespace-nowrap">
-                <div class="text-sm text-gray-700 dark:text-gray-300">18-02-2024</div>
+                <div class="text-sm text-gray-700 dark:text-gray-300"> {{ $order->created_at }} </div>
               </td>
               <td class="py-4 px-6 whitespace-nowrap">
-                <span class="px-2.5 py-0.5 text-xs font-medium bg-orange-100 text-orange-800 rounded-full dark:bg-orange-900 dark:text-orange-200">Pending</span>
+                <span class="px-2.5 py-0.5 text-xs font-medium bg-orange-100 text-orange-800 rounded-full dark:bg-orange-900 dark:text-orange-200"> {{ $order->status}} </span>
               </td>
               <td class="py-4 px-6 whitespace-nowrap">
-                <span class="px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800 rounded-full dark:bg-green-900 dark:text-green-200">Paid</span>
+                <span class="px-2.5 py-0.5 text-xs font-medium bg-green-100 text-green-800 rounded-full dark:bg-green-900 dark:text-green-200"> {{ $order->payment_status }} </span>
               </td>
               <td class="py-4 px-6 whitespace-nowrap">
-                <div class="text-sm font-medium text-gray-900 dark:text-white">$12,000.00</div>
+                <div class="text-sm font-medium text-gray-900 dark:text-white"> {{ $order->grand_total }} </div>
               </td>
               <td class="py-4 px-6 whitespace-nowrap text-right text-sm font-medium">
                 <div class="flex justify-end space-x-2">
-                  <a href="#" class="flex items-center text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400">
+                  <a href="viewOrder" class="flex items-center text-blue-600 hover:text-blue-900 dark:text-blue-500 dark:hover:text-blue-400">
                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
                       <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
@@ -58,8 +59,11 @@
                 </div>
               </td>
             </tr>
-            
-            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+            @empty
+                <h3>No Orders have been made yet!</h3>
+            @endforelse
+
+            {{-- <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <td class="py-4 px-6 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900 dark:text-white">#ORD-2024-19</div>
               </td>
@@ -87,7 +91,7 @@
                 </div>
               </td>
             </tr>
-            
+
             <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
               <td class="py-4 px-6 whitespace-nowrap">
                 <div class="text-sm font-medium text-gray-900 dark:text-white">#ORD-2024-18</div>
@@ -121,34 +125,55 @@
                   </button>
                 </div>
               </td>
-            </tr>
+            </tr> --}}
           </tbody>
         </table>
       </div>
-      
-      <!-- Pagination -->
-      <div class="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 px-6 py-4">
-        <div class="text-sm text-gray-700 dark:text-gray-400">
-          Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">12</span> results
+      @if ($userOrders->hasPages())
+        <!-- Pagination -->
+        <div class="flex items-center justify-between border-t border-gray-200 dark:border-gray-700 px-6 py-4">
+            <div class="text-sm text-gray-700 dark:text-gray-400">
+            {{-- Showing <span class="font-medium">1</span> to <span class="font-medium">3</span> of <span class="font-medium">12</span> results --}}
+            </div>
+            <div class="inline-flex rounded-md shadow-sm">
+                <!--Previous Page-->
+                <a
+                    wire:navigate
+                    href="{{ $userOrders->previousPageUrl() }}"
+                    @if($userOrders->onFirstPage()) aria-disabled="true" @endif
+                    class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                      </svg>
+                </a>
+
+                <!--Page Numbers -->
+                @foreach ($userOrders->getUrlRange(1, $userOrders->lastPage()) as $page => $url)
+                <a
+                    wire:navigate
+                    href="{{$url}}"
+                    class="flex items-center justify-center px-3 h-8 text-sm font-medium {{ $products->currentPage() === $page ? 'text-white bg-blue-600 border-blue-300' : 'text-gray-500 bg-white border-gray-300 hover:bg-gray-100 hover:text-gray-700' }} border border-gray-300 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                    wire:click="goToPage({{$page}})"
+                    >
+                    {{ $page }}
+                </a>
+                @endforeach
+
+                <!--Next Page-->
+                <a
+                    href=""
+                    wire:navigate
+                    wire:click="nextPage"
+                    @if(!$userOrders->hasMorePages()) aria-disabled="true" @endif
+                    class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
+                      <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path>
+                      </svg>
+                </a>
+            </div>
         </div>
-        <div class="inline-flex rounded-md shadow-sm">
-          <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-l-lg hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700">
-            Previous
-          </button>
-          <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-white bg-blue-600 border border-gray-300 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600">
-            1
-          </button>
-          <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700">
-            2
-          </button>
-          <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700">
-            3
-          </button>
-          <button class="flex items-center justify-center px-3 h-8 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-r-lg hover:bg-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700">
-            Next
-          </button>
-        </div>
-      </div>
+      @endif
+
     </div>
   </div>
 </div>

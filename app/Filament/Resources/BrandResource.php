@@ -27,6 +27,7 @@ class BrandResource extends Resource
     protected static ?string $recordTitleAttribute = 'name';
     protected static ?string $model = Brand::class;
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationGroup = 'Shop';
     protected static ?int $navigationSort = 2;
 
     public static function form(Form $form): Form
@@ -51,7 +52,7 @@ class BrandResource extends Resource
                                     })
                                     ->required()
                                     ->columnSpan(2),
-                                
+
                                 Forms\Components\TextInput::make('slug')
                                     ->label('URL Slug')
                                     ->placeholder('auto-generated')
@@ -68,7 +69,7 @@ class BrandResource extends Resource
                                     ->dehydrated()
                                     ->required(),
                             ]),
-                        
+
                         Forms\Components\FileUpload::make('image')
                             ->label('Brand Logo')
                             ->image()
@@ -81,7 +82,7 @@ class BrandResource extends Resource
                             ->downloadable()
                             ->openable()
                             ->columnSpanFull(),
-                        
+
                         Toggle::make('is_active')
                             ->label('Active Status')
                             ->onIcon('heroicon-o-check')
@@ -105,13 +106,13 @@ class BrandResource extends Resource
                     ->label('Logo')
                     ->circular()
                     ->defaultImageUrl(url('/images/default-brand.png')),
-                
+
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable()
                     ->weight('medium')
                     ->description(fn (Brand $record) => $record->slug),
-                
+
                 IconColumn::make('is_active')
                     ->label('Status')
                     ->boolean()
@@ -120,7 +121,7 @@ class BrandResource extends Resource
                     ->trueColor('success')
                     ->falseColor('danger')
                     ->sortable(),
-                
+
                 TextColumn::make('created_at')
                     ->label('Created')
                     ->dateTime('M d, Y')

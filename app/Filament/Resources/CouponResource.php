@@ -15,8 +15,8 @@ class CouponResource extends Resource
 {
     protected static ?string $model = Coupon::class;
     protected static ?string $navigationIcon = 'heroicon-o-ticket';
-    // protected static ?string $navigationGroup = 'Shop';
-    // protected static ?int $navigationSort = 3;
+    protected static ?string $navigationGroup = 'Shop';
+    protected static ?int $navigationSort = 3;
     protected static ?string $modelLabel = 'Discount Coupon';
     protected static ?string $pluralModelLabel = 'Discount Coupons';
 
@@ -31,7 +31,7 @@ class CouponResource extends Resource
                             ->unique(ignoreRecord: true)
                             ->maxLength(50)
                             ->columnSpan(1),
-                        
+
                         Forms\Components\Select::make('type')
                             ->options([
                                 'fixed' => 'Fixed Amount',
@@ -41,21 +41,21 @@ class CouponResource extends Resource
                             ->live()
                             ->columnSpan(1),
                     ]),
-                
+
                 Forms\Components\Grid::make()
                     ->schema([
                         Forms\Components\TextInput::make('value')
                             ->required()
                             ->numeric()
                             ->minValue(0)
-                            ->prefix(fn (Forms\Get $get) => 
+                            ->prefix(fn (Forms\Get $get) =>
                                 $get('type') === 'fixed' ? 'Ksh' : null
                             )
-                            ->suffix(fn (Forms\Get $get) => 
+                            ->suffix(fn (Forms\Get $get) =>
                                 $get('type') === 'percent' ? '%' : null
                             )
                             ->columnSpan(1),
-                            
+
                         Forms\Components\TextInput::make('min_order')
                             ->label('Minimum Order')
                             ->numeric()
@@ -64,7 +64,7 @@ class CouponResource extends Resource
                             ->nullable()
                             ->columnSpan(1),
                     ]),
-                
+
                 Forms\Components\Grid::make()
                     ->schema([
                         Forms\Components\TextInput::make('max_discount')
@@ -75,7 +75,7 @@ class CouponResource extends Resource
                             ->nullable()
                             ->hidden(fn (Forms\Get $get) => $get('type') !== 'percent')
                             ->columnSpan(1),
-                            
+
                         Forms\Components\TextInput::make('usage_limit')
                             ->numeric()
                             ->minValue(1)
@@ -83,7 +83,7 @@ class CouponResource extends Resource
                             ->helperText('Leave empty for unlimited uses')
                             ->columnSpan(1),
                     ]),
-                
+
                 Forms\Components\Grid::make()
                     ->schema([
                         Forms\Components\DatePicker::make('start_date')
@@ -92,7 +92,7 @@ class CouponResource extends Resource
                             ->displayFormat('d M Y')
                             ->closeOnDateSelection()
                             ->columnSpan(1),
-                            
+
                         Forms\Components\DatePicker::make('end_date')
                             ->required()
                             ->native(false)
@@ -101,7 +101,7 @@ class CouponResource extends Resource
                             ->after('start_date')
                             ->columnSpan(1),
                     ]),
-                
+
                 Forms\Components\Toggle::make('is_active')
                     ->default(true)
                     ->onColor('success')
@@ -118,53 +118,53 @@ class CouponResource extends Resource
                 Tables\Columns\TextColumn::make('code')
                     ->searchable()
                     ->sortable()
-                    ->description(fn (Coupon $record) => 
+                    ->description(fn (Coupon $record) =>
                         $record->is_active ? 'Active' : 'Inactive',
                     ),
-                    
+
                 Tables\Columns\TextColumn::make('type')
                     ->badge()
                     ->color(fn (string $state): string => match ($state) {
                         'fixed' => 'success',
                         'percent' => 'info',
                     })
-                    ->formatStateUsing(fn (string $state): string => 
+                    ->formatStateUsing(fn (string $state): string =>
                         $state === 'fixed' ? 'Fixed Amount' : 'Percentage'
                     ),
-                    
+
                 Tables\Columns\TextColumn::make('value')
-                    ->formatStateUsing(fn (string $state, Coupon $record): string => 
-                        $record->type === 'fixed' ? 
-                        'Ksh ' . number_format($state, 2) : 
+                    ->formatStateUsing(fn (string $state, Coupon $record): string =>
+                        $record->type === 'fixed' ?
+                        'Ksh ' . number_format($state, 2) :
                         $state . '%'
                     )
                     ->sortable(),
-                    
+
                 Tables\Columns\TextColumn::make('min_order')
-                    ->formatStateUsing(fn ($state) => 
+                    ->formatStateUsing(fn ($state) =>
                         $state ? 'Ksh ' . number_format($state, 2) : 'None'
                     )
                     ->sortable(),
-                    
+
                 Tables\Columns\TextColumn::make('max_discount')
-                    ->formatStateUsing(fn ($state) => 
+                    ->formatStateUsing(fn ($state) =>
                         $state ? 'Ksh ' . number_format($state, 2) : 'None'
                     )
                     ->sortable(),
-                    
+
                 Tables\Columns\TextColumn::make('used_count')
                     ->badge()
-                    ->color(fn (int $state): string => 
+                    ->color(fn (int $state): string =>
                         $state > 0 ? 'warning' : 'gray'
                     )
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('usage_limit')
-                    ->formatStateUsing(fn ($state) => 
+                    ->formatStateUsing(fn ($state) =>
                         $state ?: '∞'
                     )
                     ->sortable(),
-                
+
                 Tables\Columns\TextColumn::make('validity')
                     ->state(function (Coupon $record) {
                         $start = $record->start_date->format('d M');
@@ -172,10 +172,10 @@ class CouponResource extends Resource
                         return "{$start} - {$end}";
                     })
                     ->badge()
-                    ->color(fn (Coupon $record) => 
+                    ->color(fn (Coupon $record) =>
                         $record->end_date->isPast() ? 'danger' : 'success'
                     ),
-                    
+
                 Tables\Columns\IconColumn::make('is_active')
                     ->boolean()
                     ->trueIcon('heroicon-o-check-circle')
@@ -186,13 +186,13 @@ class CouponResource extends Resource
             ->filters([
                 Tables\Filters\Filter::make('active')
                     ->toggle()
-                    ->query(fn (Builder $query): Builder => 
+                    ->query(fn (Builder $query): Builder =>
                         $query->where('is_active', true)
                     ),
-                    
+
                 Tables\Filters\Filter::make('expired')
                     ->label('Expired Coupons')
-                    ->query(fn (Builder $query): Builder => 
+                    ->query(fn (Builder $query): Builder =>
                         $query->whereDate('end_date', '<', now())
                     ),
             ])
@@ -200,7 +200,7 @@ class CouponResource extends Resource
                 Tables\Actions\EditAction::make()
                     ->icon('heroicon-o-pencil')
                     ->successNotificationTitle('Coupon updated'),
-                    
+
                 Tables\Actions\DeleteAction::make()
                     ->icon('heroicon-o-trash')
                     ->successNotificationTitle('Coupon deleted'),

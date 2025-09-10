@@ -48,11 +48,8 @@
                         Contact
                     </a>
                     </li>
-
-
                 </ul>
             </div>
-
 
             <!-- Right Side Icons -->
             <div class="flex items-center space-x-3 md:order-2">

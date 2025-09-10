@@ -37,6 +37,11 @@ class ProductDetailPage extends Component
         ;
     }
 
+    public function buyNow()
+    {
+
+    }
+
     public function mount($slug)
     {
         $this->slug = $slug;

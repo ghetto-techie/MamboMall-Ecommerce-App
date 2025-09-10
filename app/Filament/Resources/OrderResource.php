@@ -24,7 +24,8 @@ class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
     protected static ?string $navigationIcon = 'heroicon-o-shopping-bag';
-    protected static ?int $navigationSort = 5;
+    protected static ?string $navigationGroup = 'Shop';
+    // protected static ?int $navigationSort = 0;
 
     public static function getNavigationBadge(): ?string
     {
@@ -79,7 +80,7 @@ class OrderResource extends Resource
                                         'processing' => 'Processing',
                                         'shipped' => 'Shipped',
                                         'delivered' => 'Delivered',
-                                        'canceled' => 'Canceled',
+                                        'cancelled' => 'Cancelled',
                                     ])
                                     ->default('new')
                                     ->colors([
@@ -87,14 +88,14 @@ class OrderResource extends Resource
                                         'processing' => 'warning',
                                         'shipped' => 'info',
                                         'delivered' => 'success',
-                                        'canceled' => 'danger',
+                                        'cancelled' => 'danger',
                                     ])
                                     ->icons([
                                         'new' => 'heroicon-m-sparkles',
                                         'processing' => 'heroicon-m-arrow-path',
                                         'shipped' => 'heroicon-m-truck',
                                         'delivered' => 'heroicon-m-check-badge',
-                                        'canceled' => 'heroicon-m-x-circle',
+                                        'cancelled' => 'heroicon-m-x-circle',
                                     ])
                                     ->inline()
                                     ->required()
@@ -207,16 +208,16 @@ class OrderResource extends Resource
                                     ->content(function (Get $get) {
                                         $itemsTotal = 0;
                                         $shipping = (float)($get('shipping_amount') ?? 0);
-                                        
+
                                         if ($items = $get('items')) {
                                             foreach ($items as $item) {
                                                 $itemsTotal += (float)($item['total_amount'] ?? 0);
                                             }
                                         }
-                                        
+
                                         $grandTotal = $itemsTotal + $shipping;
                                         $currency = $get('currency') ?? 'KES';
-                                        
+
                                         return Number::currency($grandTotal, $currency);
                                     }),
 
@@ -226,13 +227,13 @@ class OrderResource extends Resource
                                     ->dehydrateStateUsing(function (Get $get) {
                                         $itemsTotal = 0;
                                         $shipping = (float)($get('shipping_amount') ?? 0);
-                                        
+
                                         if ($items = $get('items')) {
                                             foreach ($items as $item) {
                                                 $itemsTotal += (float)($item['total_amount'] ?? 0);
                                             }
                                         }
-                                        
+
                                         return $itemsTotal + $shipping;
                                     }),
                             ]),

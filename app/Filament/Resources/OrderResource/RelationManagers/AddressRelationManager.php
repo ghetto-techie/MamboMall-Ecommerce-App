@@ -30,10 +30,23 @@ class AddressRelationManager extends RelationManager
                     ->maxLength(255),
                 Forms\Components\TextInput::make('city')
                     ->required()
+                    ->label('City/Town')
                     ->maxLength(255),
-                Forms\Components\TextInput::make('state')
-                    ->required()
-                    ->maxLength(255),
+                Forms\Components\Select::make('county')
+                    ->options([
+                        'Nairobi',
+                        'Nakuru',
+                        'Mombassa',
+                        'Eldoret',
+                        'Kisumu',
+                        'Nyahururu',
+                        'Kajiado',
+                        'Busia',
+                        'Muranga',
+                        'Nyanza',
+                        'Turkana'
+                    ])
+                    ->required(),
                 Forms\Components\TextInput::make('zip_code')
                     ->required()
                     ->numeric()
@@ -52,7 +65,7 @@ class AddressRelationManager extends RelationManager
                 Tables\Columns\TextColumn::make('full_name')->label("Full Name"),
                 Tables\Columns\TextColumn::make('phone'),
                 Tables\Columns\TextColumn::make('city'),
-                Tables\Columns\TextColumn::make('state'),
+                Tables\Columns\TextColumn::make('county')->label('City/Town'),
                 Tables\Columns\TextColumn::make('zip_code'),
                 Tables\Columns\TextColumn::make('street_address'),
             ])
