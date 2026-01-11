@@ -26,19 +26,22 @@
 
             <!-- Image Thumbnails -->
             <div class="flex flex-wrap gap-2 mb-6">
-              @foreach($product->images as $index => $image)
-                <div
-                  class="w-1/4 cursor-pointer transition-all duration-300 border-2 rounded-md hover:border-blue-500"
-                  :class="{ 'border-blue-500': mainImage === '{{ url('storage', $image) }}' }"
-                  @click="mainImage = '{{ url('storage', $image) }}'"
-                >
-                  <img
-                    src="{{ url('storage', $image) }}"
-                    alt="Thumbnail {{ $index + 1 }}"
-                    class="object-cover w-full h-20 bg-gray-100 dark:bg-gray-600"
-                  >
-                </div>
-              @endforeach
+                @if ($product->images)
+                    @foreach($product->images as $index => $image)
+                        <div
+                        class="w-1/4 cursor-pointer transition-all duration-300 border-2 rounded-md hover:border-blue-500"
+                        :class="{ 'border-blue-500': mainImage === '{{ url('storage', $image) }}' }"
+                        @click="mainImage = '{{ url('storage', $image) }}'"
+                        >
+                            <img
+                                src="{{ url('storage', $image) }}"
+                                alt="Thumbnail {{ $index + 1 }}"
+                                class="object-cover w-full h-20 bg-gray-100 dark:bg-gray-600"
+                            >
+                        </div>
+                    @endforeach
+                @endif
+
             </div>
 
             <!-- Shipping Information -->
@@ -170,10 +173,10 @@
                 </span>
               </button>
               <button
-                wire:click="buyNow"
+                wire:click="addToWishlist"
                 class="flex-1 px-6 py-3 text-base font-medium text-gray-900 bg-white border border-gray-300 rounded-lg hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600 dark:hover:bg-gray-600 transition-colors"
               >
-                Buy Now
+                Add to Wishlist
               </button>
             </div>
           </div>

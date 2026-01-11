@@ -200,9 +200,16 @@
                 class="group bg-white border border-gray-200 rounded-2xl shadow-sm dark:bg-gray-800 dark:border-gray-700 overflow-hidden transition-all duration-300 hover:shadow-lg">
                 <div class="relative">
                   <a wire:navigate href="{{ route('product.detail', $product->slug) }}" class="block overflow-hidden">
-                    <img class="w-full h-60 object-cover transition-transform duration-500 group-hover:scale-105"
+                    @if ($product->images && count($product->images) > 0)
+                        <img class="w-full h-60 object-cover transition-transform duration-500 group-hover:scale-105"
                          src="{{ url('storage',$product->images[0]) }}"
                          alt="{{ $product->name }}">
+                    @else
+                        <img class="w-full h-60 object-cover transition-transform duration-500 group-hover:scale-105"
+                         src="{{ asset('images/placeholder.png') }}"
+                         alt="{{ $product->name }}">
+                    @endif
+
                   </a>
                   <div class="absolute top-3 right-3">
                     <button type="button" class="p-2 bg-white rounded-full shadow-md text-gray-700 hover:text-red-500 dark:bg-gray-700 dark:text-gray-300 dark:hover:text-red-400">

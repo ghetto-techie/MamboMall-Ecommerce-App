@@ -273,6 +273,12 @@ class ProductResource extends Resource
                 ]),
 
             ])
+            ->headerActions([
+                Tables\Actions\ImportAction::make()
+                    ->importer(\App\Filament\Imports\ProductImporter::class)
+                    ->label('Import')
+                    ->color('success'),
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
@@ -334,4 +340,4 @@ class ProductResource extends Resource
         }
         return $record->images;
     }
-}       
+}

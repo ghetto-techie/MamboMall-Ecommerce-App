@@ -33,6 +33,14 @@ class Product extends Model
         'price' => 'decimal:2'
     ];
 
+    protected $attributes = [
+        'is_active' => true,
+        'in_stock' => true,
+        'is_featured' => false,
+        'on_sale' => false,
+    ];
+
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
