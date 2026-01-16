@@ -60,6 +60,11 @@ class ProductImporter extends Importer
         ];
     }
 
+    public static function getDescription(): ?string
+    {
+        return 'Supported formats: CSV, XLSX, XLS, ODS';
+    }
+
     public function resolveRecord(): Product
     {
         return Product::firstOrNew([
