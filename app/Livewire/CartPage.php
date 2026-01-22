@@ -15,7 +15,7 @@ class CartPage extends Component
     public $cart_items = [];
     public $grandTotal = 0;
     public $subtotal = 0;
-    public $taxRate = 0.15; // 15% tax rate
+    public $taxRate = 0; // Use fraction for rate e.g. 0.16 for 16% VAT in Kenya
     public $taxAmount = 0;
     public $discount = 0;
     public $couponCode = '';
@@ -24,30 +24,12 @@ class CartPage extends Component
     public $couponSuccess = '';
     public $appliedCoupon = null;
 
-    public function mount()
-    {
-        $this->cart_items = CartManagement::getCartItemsFromCookie();
-        $this->calculateTotals();
-        $this->loadSavedCoupon();
-    }
-
     private function loadSavedCoupon()
     {
         if ($couponCode = session('applied_coupon')) {
             $this->couponCode = $couponCode;
             $this->applyCoupon();
         }
-    }
-
-    public function render()
-    {
-        return view('livewire.cart-page', [
-            'cart_items' => $this->cart_items,
-            'grandTotal' => $this->grandTotal,
-            'itemCount' => $this->itemCount,
-            'subtotal' => $this->subtotal,
-            'taxAmount' => $this->taxAmount,
-        ]);
     }
 
     private function calculateTotals()
@@ -158,5 +140,23 @@ class CartPage extends Component
         if ($this->appliedCoupon) {
             $this->applyCoupon();
         }
+    }
+
+    public function mount()
+    {
+        $this->cart_items = CartManagement::getCartItemsFromCookie();
+        $this->calculateTotals();
+        $this->loadSavedCoupon();
+    }
+    
+    public function render()
+    {
+        return view('livewire.cart-page', [
+            'cart_items' => $this->cart_items,
+            'grandTotal' => $this->grandTotal,
+            'itemCount' => $this->itemCount,
+            'subtotal' => $this->subtotal,
+            'taxAmount' => $this->taxAmount,
+        ]);
     }
 }

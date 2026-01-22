@@ -15,6 +15,7 @@ class ProductSeeder extends Seeder
     {
         $faker = Faker::create();
 
+        // Ensure categories & brands exist
         $categoryIds = Category::pluck('id')->toArray();
         $brandIds = Brand::pluck('id')->toArray();
 
@@ -27,39 +28,55 @@ class ProductSeeder extends Seeder
             $brandIds = Brand::pluck('id')->toArray();
         }
 
+        // Example product images (replace with your real images inside storage/app/public/products/)
         $imageFiles = [
-            '01JWQRNW8J7P7SXFGY7BA1FGAJ.webp', '01JWQSM8V6GC9A382F2DYRCYY1.jpg',
-            '01JWQT3XCE7H31JASCMCCGAAFA.webp', '01JWRH7QZ6JCGWNTK9DKW5MQCQ.jpg',
-            'LuP7afRdGB1UvO5JOB6b2l473e2Yx1J46XlGsqOx.png',
-            // Add more or replace with actual alcohol product images later
+            'air_force_1.jpg',
+            'jordan_1_retro.jpg',
+            'yeezy_boost_350.jpg',
+            'converse_chuck_taylor.jpg',
+            'puma_suede.jpg',
+            'timberland_boot.jpg',
+            'balenciaga_triple_s.jpg',
+            'gucci_ace.jpg',
         ];
 
-        $kenyanAlcoholNames = [
-            'Tusker Lager', 'Tusker Lite', 'Tusker Malt',
-            'White Cap Lager', 'Guinness Foreign Extra',
-            'Summit Lager', 'Senator Keg', 'Crescent Vodka',
-            'Crescent Gin', '254 Pale Ale', 'Kenyan Originals Apple Cider',
-            'Procera African Juniper Gin', 'Changaa Premium',
-            'Muratina Local Brew', 'Kingfisher Berry Wine',
-            'Jebel Gin', 'Sierra Amber Ale', 'Chrome Vodka',
+        // Popular product names
+        $productNames = [
+            'Nike Air Force 1',
+            'Nike Air Max 90',
+            'Nike Dunk Low',
+            'Air Jordan 1 Retro',
+            'Adidas Yeezy Boost 350',
+            'Adidas Ultraboost',
+            'Puma Suede Classic',
+            'New Balance 550',
+            'Converse Chuck Taylor All Star',
+            'Vans Old Skool',
+            'Timberland Premium 6-Inch Boot',
+            'Fila Disruptor II',
+            'Skechers D’Lites',
+            'Asics Gel-Kayano',
+            'Under Armour Curry Flow',
+            'Balenciaga Triple S',
+            'Gucci Ace Sneaker',
         ];
 
-        for ($i = 0; $i < 50; $i++) {
-            $productName = $faker->randomElement($kenyanAlcoholNames) . ' ' . $faker->numerify('#L###');
-            $randomImagePath = 'products/' . $imageFiles[array_rand($imageFiles)];
+        // Seed products
+        foreach ($productNames as $i => $productName) {
+            $randomImagePath = 'products/' . $faker->randomElement($imageFiles);
 
             Product::create([
                 'category_id' => $faker->randomElement($categoryIds),
                 'brand_id' => $faker->randomElement($brandIds),
                 'name' => $productName,
-                'slug' => Str::slug($productName),
+                'slug' => Str::slug($productName . '-' . $i),
                 'images' => [$randomImagePath],
-                'description' => $faker->sentence() . ' Best served chilled. ' . $faker->sentence(),
-                'price' => $faker->randomFloat(2, 100, 15500), // realistic alcohol price range
-                'is_active' => $faker->boolean(90),
+                'description' => $faker->sentence(10) . ' ' . $faker->sentence(12),
+                'price' => $faker->randomFloat(2, 2500, 50000), // Typical sneaker price range in KES
+                'is_active' => $faker->boolean(95),
                 'is_featured' => $faker->boolean(40),
-                'in_stock' => $faker->boolean(95),
-                'on_sale' => $faker->boolean(25),
+                'in_stock' => $faker->boolean(90),
+                'on_sale' => $faker->boolean(30),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

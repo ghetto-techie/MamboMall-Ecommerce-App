@@ -11,20 +11,17 @@ class CategorySeeder extends Seeder
     public function run()
     {
         $categories = [
-            'Beer',
-            'Lager',
-            'Stout',
-            'Cider',
-            'Whisky',
-            'Vodka',
-            'Gin',
-            'Rum',
-            'Brandy',
-            'Traditional Brews',
-            'Wine',
-            'Rum',
-            'Sprits',
-            'Custom'
+            'Sneakers',
+            'Running Shoes',
+            'Basketball Shoes',
+            'Casual Wear',
+            'Boots',
+            'Slides & Sandals',
+            'Streetwear',
+            'Luxury',
+            'Kids',
+            'Women',
+            'Men',
         ];
 
         foreach ($categories as $categoryName) {

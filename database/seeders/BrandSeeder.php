@@ -11,36 +11,21 @@ class BrandSeeder extends Seeder
     public function run()
     {
         $brands = [
-            // Mainstream beers (EABL)
-            'Tusker',
-            'Tusker Malt',
-            'Tusker Lite',
-            'White Cap',
-            'Pilsner',
-            'Guinness',
-            'Jack Daniels', // Added Jack Daniels as a popular brand
-            'Hunter',
-            'Hennessy', 
-            'Kenya Cane', 
-            'Smirnoff', 
-            'Gordon\'s', 
-            'Captain Morgan', 
-            'General Medley', 
-            'Bacardi', 
-            'Malibu', 
-            'Absolut', 
-            'Ciroc', 
-            'Belvedere',
-            // Local / regional brews
-            'Summit Lager',
-            'Senator',
-            // Craft & microbrews
-            '254 Brewing Co',
-            'Kenyan Originals',
-            'Procera Gin',
-            // Spirits from Keroche
-            'Crescent Gin',
-            'Crescent Vodka',
+            'Nike',
+            'Adidas',
+            'Puma',
+            'New Balance',
+            'Reebok',
+            'Jordan',
+            'Converse',
+            'Vans',
+            'Timberland',
+            'Fila',
+            'Skechers',
+            'Asics',
+            'Under Armour',
+            'Balenciaga',
+            'Gucci',
         ];
 
         foreach ($brands as $brandName) {

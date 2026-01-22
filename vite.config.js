@@ -8,4 +8,11 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    // server: {
+    //     host: '0.0.0.0',  // allow LAN access
+    //     port: 5173,       // default Vite port
+    //     hmr: {
+    //         host: '192.168.100.19', // your PC’s local IP
+    //     },
+    // },
 });

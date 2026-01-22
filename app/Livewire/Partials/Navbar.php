@@ -19,7 +19,7 @@ class Navbar extends Component
     {
         $this->total_count = $total_count;
     }
-    
+
     public function render()
     {
         return view('livewire.partials.navbar');

@@ -6,7 +6,7 @@ use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers\AddressRelationManager;
 use App\Models\Order;
 use App\Models\Product;
-use App\Filament\Resources\OrderResource\Widgets\OrderStats;
+use App\Services\InvoiceService;
 use Filament\Forms;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
@@ -16,9 +16,11 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
 
 class OrderResource extends Resource
@@ -56,11 +58,9 @@ class OrderResource extends Resource
 
                                 Forms\Components\Select::make('payment_method')
                                     ->options([
-                                        'stripe' => 'Stripe',
-                                        'cod' => 'Cash on Delivery',
-                                        'payhero' => 'M-Pesa STK',
-                                        'equitel' => 'Equitel',
-                                        'paypal' => 'PayPal',
+                                        'card' => 'Credit Card',
+                                        'mpesa' => 'M-Pesa',
+                                        'cash_on_delivery' => 'Cash on Delivery',
                                     ])
                                     ->required()
                                     ->columnSpan(1),
@@ -78,26 +78,26 @@ class OrderResource extends Resource
 
                                 ToggleButtons::make('status')
                                     ->options([
-                                        Order::STATUS_NEW => 'New',
-                                        Order::STATUS_PROCESSING => 'Processing',
-                                        Order::STATUS_SHIPPED => 'Shipped',
-                                        Order::STATUS_DELIVERED => 'Delivered',
-                                        Order::STATUS_CANCELED => 'Canceled',
+                                        'new' => 'New',
+                                        'processing' => 'Processing',
+                                        'shipped' => 'Shipped',
+                                        'delivered' => 'Delivered',
+                                        'canceled' => 'Canceled',
                                     ])
                                     ->default('new')
                                     ->colors([
-                                        Order::STATUS_NEW => 'primary',
-                                        Order::STATUS_PROCESSING => 'warning',
-                                        Order::STATUS_SHIPPED => 'info',
-                                        Order::STATUS_DELIVERED => 'success',
-                                        Order::STATUS_CANCELED => 'danger',
+                                        'new' => 'primary',
+                                        'processing' => 'warning',
+                                        'shipped' => 'info',
+                                        'delivered' => 'success',
+                                        'canceled' => 'danger',
                                     ])
                                     ->icons([
-                                        Order::STATUS_NEW => 'heroicon-m-sparkles',
-                                        Order::STATUS_PROCESSING => 'heroicon-m-arrow-path',
-                                        Order::STATUS_SHIPPED => 'heroicon-m-truck',
-                                        Order::STATUS_DELIVERED => 'heroicon-m-check-badge',
-                                        Order::STATUS_CANCELED => 'heroicon-m-x-circle',
+                                        'new' => 'heroicon-m-sparkles',
+                                        'processing' => 'heroicon-m-arrow-path',
+                                        'shipped' => 'heroicon-m-truck',
+                                        'delivered' => 'heroicon-m-check-badge',
+                                        'canceled' => 'heroicon-m-x-circle',
                                     ])
                                     ->inline()
                                     ->required()
@@ -110,17 +110,17 @@ class OrderResource extends Resource
                             ->schema([
                                 Forms\Components\Select::make('shipping_method')
                                     ->options([
-                                        'fedex' => 'FedEX',
-                                        'ups' => 'UPS',
-                                        'sendy' => 'Sendy',
-                                        'aerobatics' => 'Aerobatics',
                                         'pickup' => 'Pickup',
+                                        'motorbike' => 'Motorbike',
+                                        'courier' => 'Courier',
+                                        'matatu_parcel' => 'Matatu Parcel',
+                                        'g4s' => 'G4S',
                                     ])
                                     ->columnSpan(1),
 
                                 TextInput::make('shipping_amount')
                                     ->label('Shipping Cost')
-                                    ->prefix('KSH')
+                                    ->prefixIcon('heroicon-o-truck')
                                     ->numeric()
                                     ->default(0)
                                     ->required()
@@ -128,7 +128,7 @@ class OrderResource extends Resource
 
                                 Forms\Components\Select::make('currency')
                                     ->options([
-                                        'ksh' => 'KSH - Kenyan Shilling',
+                                        'KES' => 'KES - Kenyan Shilling',
                                         'USD' => 'USD - US Dollar',
                                         'EUR' => 'EUR - Euro',
                                         'GBP' => 'GBP - British Pound',
@@ -136,8 +136,9 @@ class OrderResource extends Resource
                                         'UGX' => 'UGX - Ugandan Shilling',
                                         'TZS' => 'TZS - Tanzanian Shilling',
                                     ])
-                                    ->default('ksh')
+                                    ->default('KES')
                                     ->required()
+                                    ->live()
                                     ->columnSpan(1),
                             ])
                             ->columns(3),
@@ -160,22 +161,28 @@ class OrderResource extends Resource
                                             ->distinct()
                                             ->disableOptionsWhenSelectedInSiblingRepeaterItems()
                                             ->required()
-                                            ->reactive()
-                                            ->afterStateUpdated(fn($state, Set $set) => $set('unit_amount', Product::find($state)?->price ?? 0))
+                                            ->live()
+                                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                                $price = Product::find($state)?->price ?? 0;
+                                                $set('unit_amount', $price);
+                                                $set('total_amount', $get('quantity') * $price);
+                                            })
                                             ->columnSpan(5),
 
                                         TextInput::make('quantity')
                                             ->numeric()
                                             ->default(1)
                                             ->minValue(1)
-                                            ->reactive()
-                                            ->afterStateUpdated(fn($state, Set $set, Get $get) => $set('total_amount', $state * $get('unit_amount')))
+                                            ->live(debounce: 500)
+                                            ->afterStateUpdated(function ($state, Set $set, Get $get) {
+                                                $set('total_amount', $state * $get('unit_amount'));
+                                            })
                                             ->required()
                                             ->columnSpan(2),
 
                                         TextInput::make('unit_amount')
                                             ->label('Unit Price')
-                                            ->prefix('KSH')
+                                            ->prefix(fn(Get $get) => $get('../../currency') ? $get('../../currency') . ' ' : '')
                                             ->numeric()
                                             ->disabled()
                                             ->dehydrated()
@@ -184,34 +191,53 @@ class OrderResource extends Resource
 
                                         TextInput::make('total_amount')
                                             ->label('Total')
-                                            ->prefix('KSH')
+                                            ->prefix(fn(Get $get) => $get('../../currency') ? $get('../../currency') . ' ' : '')
                                             ->numeric()
-                                            ->required()
+                                            ->disabled()
                                             ->dehydrated()
                                             ->columnSpan(2),
                                     ])
                                     ->columns(12)
-                                    ->columnSpanFull(),
+                                    ->columnSpanFull()
+                                    ->reorderable()
+                                    ->cloneable()
+                                    ->deleteAction(
+                                        fn(Forms\Components\Actions\Action $action) => $action->requiresConfirmation(),
+                                    ),
 
                                 Forms\Components\Placeholder::make('grand_total_placeholder')
                                     ->label('Grand Total')
                                     ->content(function (Get $get) {
                                         $itemsTotal = 0;
-                                        $shipping = $get('shipping_amount') ?? 0;
+                                        $shipping = (float)($get('shipping_amount') ?? 0);
 
                                         if ($items = $get('items')) {
                                             foreach ($items as $item) {
-                                                $itemsTotal += $item['total_amount'];
+                                                $itemsTotal += (float)($item['total_amount'] ?? 0);
                                             }
                                         }
 
                                         $grandTotal = $itemsTotal + $shipping;
-                                        return Number::currency($grandTotal, 'KSH');
+                                        $currency = $get('currency') ?? 'KES';
+
+                                        return Number::currency($grandTotal, $currency);
                                     }),
 
                                 Hidden::make('grand_total')
                                     ->default(0)
-                                    ->dehydrated(),
+                                    ->dehydrated()
+                                    ->dehydrateStateUsing(function (Get $get) {
+                                        $itemsTotal = 0;
+                                        $shipping = (float)($get('shipping_amount') ?? 0);
+
+                                        if ($items = $get('items')) {
+                                            foreach ($items as $item) {
+                                                $itemsTotal += (float)($item['total_amount'] ?? 0);
+                                            }
+                                        }
+
+                                        return $itemsTotal + $shipping;
+                                    }),
                             ]),
 
                         // Additional Information Section
@@ -244,7 +270,9 @@ class OrderResource extends Resource
                     ->label('Customer')
                     ->searchable()
                     ->sortable()
-                    ->description(fn($record) => $record->user->email),
+                    ->description(fn($record) => $record->user->email)
+                    ->limit(20)
+                    ->tooltip(fn($record) => $record->user->name),
 
                 Tables\Columns\SelectColumn::make('status')
                     ->label('Status')
@@ -275,31 +303,33 @@ class OrderResource extends Resource
 
                 Tables\Columns\TextColumn::make('grand_total')
                     ->label('Amount')
-                    ->money('KSH')
+                    ->money(fn($record) => $record->currency)
                     ->sortable()
                     ->alignEnd()
-                    ->weight('bold'),
+                    ->weight('bold')
+                    ->color(fn($record) => $record->payment_status === 'paid' ? 'success' : 'primary'),
 
                 // Additional columns (hidden by default)
                 Tables\Columns\TextColumn::make('payment_method')
-                    ->label('Payment Method') // Changed from 'Method' to 'Payment Method'
+                    ->label('Payment Method')
                     ->formatStateUsing(fn($state) => match ($state) {
-                        'payhero' => 'M-Pesa',
-                        'cod' => 'Cash',
-                        'equitel' => 'Equitel',
-                        default => ucfirst($state)
+                        'card' => 'Credit Card',
+                        'mpesa' => 'M-Pesa',
+                        'cash_on_delivery' => 'Cash on Delivery',
+                        default => ucwords(str_replace('_', ' ', $state))
                     })
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('shipping_method')
                     ->label('Shipping')
+                    ->formatStateUsing(fn($state) => ucwords(str_replace('_', ' ', $state)))
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('shipping_amount')
                     ->label('Shipping Cost')
-                    ->money('ksh')
+                    ->money(fn($record) => $record->currency)
                     ->toggleable(isToggledHiddenByDefault: true)
                     ->sortable(),
 
@@ -332,18 +362,18 @@ class OrderResource extends Resource
 
                 Tables\Filters\SelectFilter::make('payment_method')
                     ->options([
-                        'stripe' => 'Stripe',
-                        'cod' => 'Cash on Delivery',
-                        'payhero' => 'M-Pesa',
-                        'equitel' => 'Equitel',
-                        'paypal' => 'PayPal',
+                        'card' => 'Credit Card',
+                        'mpesa' => 'M-Pesa',
+                        'cash_on_delivery' => 'Cash on Delivery',
                     ])
                     ->indicator('Payment Method'),
 
                 Tables\Filters\Filter::make('created_at')
                     ->form([
-                        Forms\Components\DatePicker::make('created_from'),
-                        Forms\Components\DatePicker::make('created_until'),
+                        Forms\Components\DatePicker::make('created_from')
+                            ->label('From Date'),
+                        Forms\Components\DatePicker::make('created_until')
+                            ->label('To Date'),
                     ])
                     ->query(function ($query, array $data) {
                         return $query
@@ -360,14 +390,42 @@ class OrderResource extends Resource
             ->actions([
                 Tables\Actions\ActionGroup::make([
                     Tables\Actions\ViewAction::make()
-                        ->icon('heroicon-o-eye'),
+                        ->icon('heroicon-o-eye')
+                        ->color('info'),
 
                     Tables\Actions\EditAction::make()
-                        ->icon('heroicon-o-pencil'),
+                        ->icon('heroicon-o-pencil')
+                        ->color('warning'),
 
-                    // Removed invoice action
+                    Tables\Actions\Action::make('mark_paid')
+                        ->icon('heroicon-o-currency-dollar')
+                        ->color('success')
+                        ->action(fn($record) => $record->update(['payment_status' => 'paid']))
+                        ->requiresConfirmation()
+                        ->hidden(fn($record) => $record->payment_status === 'paid'),
+
+                Tables\Actions\Action::make('invoice')
+                    ->label('Download Invoice')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->action(function (Order $record) {
+                        $path = app(InvoiceService::class)->generateAndStore($record);
+
+                        Notification::make()
+                            ->title('Invoice ready')
+                            ->body('Click to download the invoice.')
+                            ->success()
+                            ->actions([
+                                \Filament\Notifications\Actions\Action::make('download')
+                                    ->label('Download')
+                                    ->url(Storage::disk('public')->url($path))
+                                    ->openUrlInNewTab(),
+                            ])
+                            ->send();
+                    }),
+
                     Tables\Actions\DeleteAction::make()
-                        ->icon('heroicon-o-trash'),
+                        ->icon('heroicon-o-trash')
+                        ->color('danger'),
                 ])
                     ->icon('heroicon-m-ellipsis-vertical')
                     ->size('sm')
@@ -387,6 +445,34 @@ class OrderResource extends Resource
                         ->action(fn($records) => $records->each->update(['status' => 'shipped']))
                         ->requiresConfirmation(),
                 ]),
+                Tables\Actions\BulkAction::make('download_invoices')
+                    ->label('Download Invoices')
+                    ->icon('heroicon-o-archive-box-arrow-down')
+                    ->requiresConfirmation()
+                    ->action(function ($records) {
+                        $path = app(InvoiceService::class)
+                            ->generateBulk($records->all());
+
+                        Notification::make()
+                            ->title('Invoices ready')
+                            ->body('Download the ZIP file containing all invoices.')
+                            ->success()
+                            ->actions([
+                                \Filament\Notifications\Actions\Action::make('download')
+                                    ->label('Download ZIP')
+                                    ->url(Storage::disk('public')->url($path))
+                                    ->openUrlInNewTab(),
+                            ])
+                            ->send();
+                    }),
+            ])
+            ->headerActions([
+                Tables\Actions\ExportAction::make()
+                    ->exporter(\App\Filament\Exports\OrderExporter::class)
+                    ->label('Export')
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->color('secondary')
+                    ->tooltip('Export all orders to a CSV file or Spreadsheet'),
             ])
             ->emptyStateHeading('No orders found')
             ->emptyStateDescription('Create your first order to get started')
@@ -395,7 +481,9 @@ class OrderResource extends Resource
                 Tables\Actions\CreateAction::make()
                     ->label('Create Order')
                     ->icon('heroicon-o-plus')
-            ]);
+            ])
+            ->deferLoading()
+            ->persistSearchInSession(); // Removed problematic method
     }
 
     public static function getRelations(): array
@@ -417,22 +505,6 @@ class OrderResource extends Resource
             'create' => Pages\CreateOrder::route('/create'),
             'view' => Pages\ViewOrder::route('/{record}'),
             'edit' => Pages\EditOrder::route('/{record}/edit'),
-        ];
-    }
-
-    public static function getWidgets(): array
-    {
-        return [
-            OrderStats::class
-        ];
-    }
-
-    public static function getGlobalSearchResultDetails(\Illuminate\Database\Eloquent\Model $record): array
-    {
-        return [
-            'Order ID' => 'ORD-' . str_pad($record->id, 5, '0', STR_PAD_LEFT),
-            'Customer' => $record->user?->name,
-            'Status' => ucfirst($record->status),
         ];
     }
 }
