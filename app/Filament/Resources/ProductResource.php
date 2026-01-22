@@ -277,7 +277,15 @@ class ProductResource extends Resource
                 Tables\Actions\ImportAction::make()
                     ->importer(\App\Filament\Imports\ProductImporter::class)
                     ->label('Import')
-                    ->color('success'),
+                    ->color('primary')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->tooltip('Import products from a CSV file'),
+                Tables\Actions\ExportAction::make()
+                    ->label('Export')
+                    ->exporter(\App\Filament\Exports\ProductExporter::class)
+                    ->color('secondary')
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->tooltip('Export all products to a CSV file or Spreadsheet'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

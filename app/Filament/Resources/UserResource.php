@@ -137,12 +137,27 @@ class UserResource extends Resource
                 ->color('gray')
                 ->button()
             ])
+            ->headerActions([
+                Tables\Actions\ImportAction::make()
+                    ->importer(\App\Filament\Imports\UserImporter::class)
+                    ->label('Import')
+                    ->color('primary')
+                    ->icon('heroicon-o-arrow-down-tray')
+                    ->tooltip('Import users from a CSV file'),
+                Tables\Actions\ExportAction::make()
+                    ->exporter(\App\Filament\Exports\UserExporter::class)
+                    ->label('Export')
+                    ->color('secondary')
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->tooltip('Export all users to a CSV file or Spreadsheet'),
+            ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()
                         ->icon('heroicon-o-trash')
                         ->requiresConfirmation(),
                 ]),
+                Tables\Actions\ExportBulkAction::make(),  // Enable bulk export action
             ])
             ->emptyStateHeading('No users found')
             ->emptyStateDescription('Create your first user')

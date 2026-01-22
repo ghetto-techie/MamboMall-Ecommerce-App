@@ -6,6 +6,7 @@ use App\Filament\Resources\OrderResource\Pages;
 use App\Filament\Resources\OrderResource\RelationManagers\AddressRelationManager;
 use App\Models\Order;
 use App\Models\Product;
+use App\Services\InvoiceService;
 use Filament\Forms;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
@@ -15,9 +16,11 @@ use Filament\Forms\Components\ToggleButtons;
 use Filament\Forms\Form;
 use Filament\Forms\Get;
 use Filament\Forms\Set;
+use Filament\Notifications\Notification;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Number;
 
 class OrderResource extends Resource
@@ -207,16 +210,16 @@ class OrderResource extends Resource
                                     ->content(function (Get $get) {
                                         $itemsTotal = 0;
                                         $shipping = (float)($get('shipping_amount') ?? 0);
-                                        
+
                                         if ($items = $get('items')) {
                                             foreach ($items as $item) {
                                                 $itemsTotal += (float)($item['total_amount'] ?? 0);
                                             }
                                         }
-                                        
+
                                         $grandTotal = $itemsTotal + $shipping;
                                         $currency = $get('currency') ?? 'KES';
-                                        
+
                                         return Number::currency($grandTotal, $currency);
                                     }),
 
@@ -226,13 +229,13 @@ class OrderResource extends Resource
                                     ->dehydrateStateUsing(function (Get $get) {
                                         $itemsTotal = 0;
                                         $shipping = (float)($get('shipping_amount') ?? 0);
-                                        
+
                                         if ($items = $get('items')) {
                                             foreach ($items as $item) {
                                                 $itemsTotal += (float)($item['total_amount'] ?? 0);
                                             }
                                         }
-                                        
+
                                         return $itemsTotal + $shipping;
                                     }),
                             ]),
@@ -401,6 +404,25 @@ class OrderResource extends Resource
                         ->requiresConfirmation()
                         ->hidden(fn($record) => $record->payment_status === 'paid'),
 
+                Tables\Actions\Action::make('invoice')
+                    ->label('Download Invoice')
+                    ->icon('heroicon-o-document-arrow-down')
+                    ->action(function (Order $record) {
+                        $path = app(InvoiceService::class)->generateAndStore($record);
+
+                        Notification::make()
+                            ->title('Invoice ready')
+                            ->body('Click to download the invoice.')
+                            ->success()
+                            ->actions([
+                                \Filament\Notifications\Actions\Action::make('download')
+                                    ->label('Download')
+                                    ->url(Storage::disk('public')->url($path))
+                                    ->openUrlInNewTab(),
+                            ])
+                            ->send();
+                    }),
+
                     Tables\Actions\DeleteAction::make()
                         ->icon('heroicon-o-trash')
                         ->color('danger'),
@@ -423,6 +445,34 @@ class OrderResource extends Resource
                         ->action(fn($records) => $records->each->update(['status' => 'shipped']))
                         ->requiresConfirmation(),
                 ]),
+                Tables\Actions\BulkAction::make('download_invoices')
+                    ->label('Download Invoices')
+                    ->icon('heroicon-o-archive-box-arrow-down')
+                    ->requiresConfirmation()
+                    ->action(function ($records) {
+                        $path = app(InvoiceService::class)
+                            ->generateBulk($records->all());
+
+                        Notification::make()
+                            ->title('Invoices ready')
+                            ->body('Download the ZIP file containing all invoices.')
+                            ->success()
+                            ->actions([
+                                \Filament\Notifications\Actions\Action::make('download')
+                                    ->label('Download ZIP')
+                                    ->url(Storage::disk('public')->url($path))
+                                    ->openUrlInNewTab(),
+                            ])
+                            ->send();
+                    }),
+            ])
+            ->headerActions([
+                Tables\Actions\ExportAction::make()
+                    ->exporter(\App\Filament\Exports\OrderExporter::class)
+                    ->label('Export')
+                    ->icon('heroicon-o-arrow-up-tray')
+                    ->color('secondary')
+                    ->tooltip('Export all orders to a CSV file or Spreadsheet'),
             ])
             ->emptyStateHeading('No orders found')
             ->emptyStateDescription('Create your first order to get started')
