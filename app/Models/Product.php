@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -40,7 +41,10 @@ class Product extends Model
         'on_sale' => false,
     ];
 
-
+    protected $appends = [
+        'average_rating',
+        'reviews_count',
+    ];
     public function category(): BelongsTo
     {
         return $this->belongsTo(Category::class);
@@ -55,4 +59,38 @@ class Product extends Model
     {
         return $this->hasMany(OrderItem::class);
     }
+
+    public function reviews(): HasMany
+    {
+        return $this->hasMany(ProductReview::class);
+    }
+
+    public function approvedReviews(): HasMany
+    {
+        return $this->reviews()->where('is_approved', true);
+    }
+
+    protected function averageRating(): Attribute
+    {
+        return Attribute::make(
+            get: fn () =>
+                round(
+                    $this->approvedReviews()->avg('rating') ?? 0,
+                    1
+                )
+        );
+    }
+    protected function reviewsCount(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->approvedReviews()->count()
+        );
+    }
+    public function recalculateRating(): void
+    {
+        $stats = $this->approvedReviews()
+            ->selectRaw('COUNT(*) as count, AVG(rating) as avg')
+            ->first();
+    }
+
 }

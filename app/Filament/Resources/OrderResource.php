@@ -403,25 +403,30 @@ class OrderResource extends Resource
                         ->action(fn($record) => $record->update(['payment_status' => 'paid']))
                         ->requiresConfirmation()
                         ->hidden(fn($record) => $record->payment_status === 'paid'),
+                    Tables\Actions\Action::make('invoice')
+                        ->label('Download Invoice')
+                        ->icon('heroicon-o-document-arrow-down')
+                        ->action(function (Order $record) {
 
-                Tables\Actions\Action::make('invoice')
-                    ->label('Download Invoice')
-                    ->icon('heroicon-o-document-arrow-down')
-                    ->action(function (Order $record) {
-                        $path = app(InvoiceService::class)->generateAndStore($record);
+                            $path = app(InvoiceService::class)->generateAndStore($record);
 
-                        Notification::make()
-                            ->title('Invoice ready')
-                            ->body('Click to download the invoice.')
-                            ->success()
-                            ->actions([
-                                \Filament\Notifications\Actions\Action::make('download')
-                                    ->label('Download')
-                                    ->url(Storage::disk('public')->url($path))
-                                    ->openUrlInNewTab(),
-                            ])
-                            ->send();
-                    }),
+                            $notification = Notification::make()
+                                ->title('Invoice ready')
+                                ->body('Invoice for order ORD-' . str_pad($record->id, 5, '0', STR_PAD_LEFT))
+                                ->success()
+                                ->actions([
+                                    \Filament\Notifications\Actions\Action::make('download')
+                                        ->label('Download')
+                                        ->url(Storage::disk('public')->url($path))
+                                        ->openUrlInNewTab(),
+                                ]);
+
+                            // Toast
+                            $notification->send();
+
+                            // Persistent (notification bell)
+                            $notification->sendToDatabase(auth()->user());
+                        }),
 
                     Tables\Actions\DeleteAction::make()
                         ->icon('heroicon-o-trash')
@@ -450,21 +455,25 @@ class OrderResource extends Resource
                     ->icon('heroicon-o-archive-box-arrow-down')
                     ->requiresConfirmation()
                     ->action(function ($records) {
+
                         $path = app(InvoiceService::class)
                             ->generateBulk($records->all());
 
-                        Notification::make()
+                        $notification = Notification::make()
                             ->title('Invoices ready')
-                            ->body('Download the ZIP file containing all invoices.')
+                            ->body(count($records) . ' invoices bundled into a ZIP file.')
                             ->success()
                             ->actions([
                                 \Filament\Notifications\Actions\Action::make('download')
                                     ->label('Download ZIP')
                                     ->url(Storage::disk('public')->url($path))
                                     ->openUrlInNewTab(),
-                            ])
-                            ->send();
+                            ]);
+
+                        $notification->send();
+                        $notification->sendToDatabase(auth()->user());
                     }),
+
             ])
             ->headerActions([
                 Tables\Actions\ExportAction::make()

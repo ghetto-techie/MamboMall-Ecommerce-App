@@ -6,15 +6,32 @@
 
     <style>
         body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
-        table { width: 100%; border-collapse: collapse; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
         th, td { border: 1px solid #ddd; padding: 6px; }
-        th { background: #f5f5f5; }
+        th { background: #f3f3f3; }
         .right { text-align: right; }
+        .header { display: flex; justify-content: space-between; }
+        .logo { height: 60px; }
+        .company { text-align: right; }
     </style>
 </head>
 <body>
 
-<h2>Invoice</h2>
+<div class="header">
+    <div>
+        <img class="logo" src="{{ public_path('storage/' . config('company.logo')) }}">
+    </div>
+    <div class="company">
+        <strong>{{ config('company.name') }}</strong><br>
+        {{ config('company.email') }}<br>
+        {{ config('company.phone') }}<br>
+        {{ config('company.address') }}
+    </div>
+</div>
+
+<hr>
+
+<h3>Invoice</h3>
 
 <p>
     <strong>Invoice:</strong> ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}<br>
@@ -22,7 +39,7 @@
 </p>
 
 <p>
-    <strong>Customer:</strong><br>
+    <strong>Bill To:</strong><br>
     {{ $order->user->name }}<br>
     {{ $order->user->email }}
 </p>

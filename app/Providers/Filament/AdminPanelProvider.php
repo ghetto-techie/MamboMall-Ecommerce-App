@@ -3,6 +3,13 @@
 namespace App\Providers\Filament;
 
 use App\Filament\Resources\OrderResource\Widgets\OrderStats;
+use App\Filament\Widgets\DashboardStats;
+use App\Filament\Widgets\OrdersChart;
+use App\Filament\Widgets\OrderStatusChart;
+use App\Filament\Widgets\RevenueChart;
+use App\Filament\Widgets\TopProducts;
+use App\Filament\Widgets\UsersChart;
+use App\Models\User;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -35,9 +42,9 @@ class AdminPanelProvider extends PanelProvider
                 'primary' => Color::hex('#2563EB'), // More professional blue
                 'secondary' => Color::hex('#8B5CF6'), // Sophisticated purple
                 'accent' => Color::hex('#EC4899'), // Modern pink accent
-                'gray' => Color::Zinc, // Professional neutral
+                'gray' => Color::Slate, // Professional neutral
             ])
-            ->font('Montserrat', provider: \Filament\FontProviders\GoogleFontProvider::class)
+            ->font('Inter', provider: \Filament\FontProviders\GoogleFontProvider::class)
             ->darkMode(true)
             ->spa()
             ->databaseNotifications()
@@ -50,8 +57,12 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->discoverWidgets(in: app_path('Filament/Widgets'), for: 'App\\Filament\\Widgets')
             ->widgets([
-                OrderStats::class,
-                Widgets\AccountWidget::class,
+                DashboardStats::class,
+                RevenueChart::class,
+                OrdersChart::class,
+                UsersChart::class,
+                TopProducts::class,
+                OrderStatusChart::class,
             ])
             ->middleware([
                 EncryptCookies::class,

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources;
 
 use App\Filament\Resources\ProductResource\Pages;
+use App\Filament\Resources\ProductResource\RelationManagers\ReviewsRelationManager;
 use App\Models\Product;
 use App\Models\Category;
 use App\Models\Brand;
@@ -305,6 +306,7 @@ class ProductResource extends Resource
     {
         return [
             // Add relations if needed
+            ReviewsRelationManager::class,
         ];
     }
 

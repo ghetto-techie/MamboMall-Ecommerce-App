@@ -12,7 +12,7 @@ use Filament\Widgets\TableWidget as BaseWidget;
 class LatestOrders extends BaseWidget
 {
     protected int | string | array $columnSpan = 'full'; // Full width of the parent container
-    protected static ?int $sort = 2; // Position in the dashboard
+    protected static ?int $sort = 3; // Position in the dashboard
     public function table(Table $table): Table
     {
         return $table
@@ -34,7 +34,7 @@ class LatestOrders extends BaseWidget
                     ->sortable(),
                 TextColumn::make('grand_total')
                     ->label('Total Amount')
-                    ->formatStateUsing(fn ($state, Order $record): string => 
+                    ->formatStateUsing(fn ($state, Order $record): string =>
                         $record->currency . ' ' . number_format($state, 2))
                     ->sortable(),
                 TextColumn::make('status')
